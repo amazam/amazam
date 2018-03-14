@@ -9,11 +9,19 @@
   "dependencies": {
     "react": "^16.3.0-alpha.1",
     "react-native": "0.54.2",
-    "react-native-camera": "^1.0.2"
+    "react-native-camera": "^1.0.2",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-jest": "22.4.1",
     "babel-preset-react-native": "4.0.0",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
     "jest": "22.4.2",
     "react-test-renderer": "^16.3.0-alpha.1"
   },
