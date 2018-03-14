@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import { StackNavigator } from 'react-navigation';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -23,7 +24,7 @@ const instructions = Platform.select({
 });
 
 type Props = {};
-export default class App extends Component<Props> {
+class CameraScreen extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
@@ -54,8 +55,33 @@ export default class App extends Component<Props> {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options)
       console.log(data.uri);
+      this.props.navigation.navigate('Details', {
+        picture: data.base64,
+      });
     }
   };
+}
+
+class DetailsScreen extends React.Component {
+  render() {
+    const { params } = this.props.navigation.state;
+    const picture = params ? params.picture : 'Failure';
+
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+        <Text>picture: {JSON.stringify(picture)}</Text>
+        <Button
+          title="Go to Details... again"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+        <Button
+          title="Go back"
+          onPress={() => this.props.navigation.goBack()}
+        />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -79,3 +105,23 @@ const styles = StyleSheet.create({
     margin: 20
   }
 });
+
+const RootStack = StackNavigator(
+  {
+    Home: {
+      screen: CameraScreen,
+    },
+    Details: {
+      screen: DetailsScreen,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+  },
+);
+
+export default class App extends Component {
+  render() {
+    return <RootStack />;
+  }
+}
