@@ -4,6 +4,7 @@ import {
   View,
   Button,
 } from 'react-native';
+import { CLOUDSIGHT } from 'react-native-dotenv';
 
 export default class Result extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class Result extends Component {
     const analysisResult = await (await fetch(this.getAnalysisUrl, {
       method: 'GET',
       headers: {
-        Authorization: `CloudSight ${process.env.CLOUDSIGHT}`,
+        Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
       },
     })).json();
