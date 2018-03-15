@@ -12,6 +12,7 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Button
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { StackNavigator } from 'react-navigation';
