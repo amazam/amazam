@@ -24,7 +24,7 @@ export default class Detail extends Component {
     const postImageResponse = await (await fetch('https://api.cloudsight.ai/v1/images', {
       method: 'POST',
       headers: {
-        Authorization: 'CloudSight TLTLd-bLtKFq0y4ZvfuBSA',
+        Authorization: `CloudSight ${process.env.CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/json',
       },

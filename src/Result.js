@@ -19,7 +19,7 @@ export default class Result extends Component {
     const analysisResult = await (await fetch(this.getAnalysisUrl, {
       method: 'GET',
       headers: {
-        Authorization: 'CloudSight TLTLd-bLtKFq0y4ZvfuBSA',
+        Authorization: `CloudSight ${process.env.CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
       },
     })).json();
