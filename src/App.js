@@ -2,6 +2,7 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import Camera from './Camera';
 import Detail from './Detail';
+import Result from './Result';
 
 const RootStack = StackNavigator(
   {
@@ -10,6 +11,9 @@ const RootStack = StackNavigator(
     },
     Details: {
       screen: Detail,
+    },
+    Result: {
+      screen: Result,
     },
   },
   {

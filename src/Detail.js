@@ -1,28 +1,57 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
   Button,
 } from 'react-native';
+import { CLOUDSIGHT } from 'react-native-dotenv';
 
-const Detail = ({ navigation }) => {
-  const { params } = navigation.state;
-  const picture = params ? params.picture : 'Failure';
+export default class Detail extends Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Text>picture: {JSON.stringify(picture)}</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() => navigation.navigate('Details')}
-      />
-      <Button
-        title="Go back"
-        onPress={() => navigation.goBack()}
-      />
-    </View>
-  );
-};
+    const { params } = this.props.navigation.state;
+    this.picture = params ? params.picture : 'Failure';
 
-export default Detail;
+    this.state = { postImageStatus: null };
+  }
+
+  async componentDidMount() {
+    const sendData = {
+      image: `data:image/png;base64,${this.picture}`,
+      locale: 'en_US',
+    };
+
+    const postImageResponse = await (await fetch('https://api.cloudsight.ai/v1/images', {
+      method: 'POST',
+      headers: {
+        Authorization: `CloudSight ${CLOUDSIGHT}`,
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(sendData),
+    })).json();
+
+    this.getAnalysisUrl = `https://api.cloudsight.ai/v1/images/${postImageResponse.token}`;
+    this.setState({ postImageStatus: postImageResponse.status });
+  }
+
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+        <Text>response: {this.state.postImageStatus}</Text>
+        <Button
+          title="Go to get the analysis"
+          onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
+            url: this.getAnalysisUrl,
+          }), 5000)}
+        />
+        <Button
+          title="Go back"
+          onPress={() => this.props.navigation.goBack()}
+        />
+      </View>
+    );
+  }
+}
