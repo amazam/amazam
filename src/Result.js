@@ -27,20 +27,18 @@ export default class Result extends Component {
       },
     })).json();
 
-    console.log(analysisResult);
-
-    const amazonResult = await getResultAmazon('Nike Shoes');
-    console.log(amazonResult);
+    const amazonResult = await getResultAmazon(analysisResult.name);
+    this.setState({ item: amazonResult });
   }
 
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Hello</Text>
-        {/* <FlatList
-          data={[]}
-          renderItem={({ item }) => <Text>{item.name}</Text>}
-        /> */}
+        <FlatList
+          data={this.state.item.map(eachItem => ({ key: eachItem.DetailPageURL[0] }))}
+          renderItem={({ item }) => <Text>{item.key}</Text>}
+        />
         <Button
           title="Go back"
           onPress={() => this.props.navigation.goBack()}

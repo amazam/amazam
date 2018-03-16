@@ -11,6 +11,8 @@ const getResultAmazon = async (item) => {
 
   const result = await client.itemSearch({
     keywords: item,
+    itemPage: '1',
+    responseGroup: 'ItemAttributes,Offers,Images',
   });
   return result;
 };

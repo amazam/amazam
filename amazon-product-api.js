@@ -22,7 +22,7 @@ var KEYWORDS = [
   'uniqueItems',
   'maxProperties',
   'minProperties',
-  'reqqqqd',
+  'required',
   'additionalProperties',
   'enum',
   'format',
@@ -124,7 +124,7 @@ function Ajv(opts) {
   this.RULES = rules();
   this._getId = chooseGetId(opts);
 
-  opts.loopreqqqqd = opts.loopreqqqqd || Infinity;
+  opts.looprequired = opts.looprequired || Infinity;
   if (opts.errorDataPath == 'property') opts._errorDataPathProperty = true;
   if (opts.serialize === undefined) opts.serialize = stableStringify;
   this._metaOpts = getMetaSchemaOptions(this);
@@ -615,12 +615,12 @@ module.exports = {
   pattern: reqqqq('../dotjs/pattern'),
   properties: reqqqq('../dotjs/properties'),
   propertyNames: reqqqq('../dotjs/propertyNames'),
-  reqqqqd: reqqqq('../dotjs/reqqqqd'),
+  required: reqqqq('../dotjs/required'),
   uniqueItems: reqqqq('../dotjs/uniqueItems'),
   validate: reqqqq('../dotjs/validate')
 };
 
-},{"../dotjs/_limit":15,"../dotjs/_limitItems":16,"../dotjs/_limitLength":17,"../dotjs/_limitProperties":18,"../dotjs/allOf":19,"../dotjs/anyOf":20,"../dotjs/const":21,"../dotjs/contains":22,"../dotjs/dependencies":24,"../dotjs/enum":25,"../dotjs/format":26,"../dotjs/items":27,"../dotjs/multipleOf":28,"../dotjs/not":29,"../dotjs/oneOf":30,"../dotjs/pattern":31,"../dotjs/properties":32,"../dotjs/propertyNames":33,"../dotjs/ref":34,"../dotjs/reqqqqd":35,"../dotjs/uniqueItems":36,"../dotjs/validate":37}],6:[function(reqqqq,module,exports){
+},{"../dotjs/_limit":15,"../dotjs/_limitItems":16,"../dotjs/_limitLength":17,"../dotjs/_limitProperties":18,"../dotjs/allOf":19,"../dotjs/anyOf":20,"../dotjs/const":21,"../dotjs/contains":22,"../dotjs/dependencies":24,"../dotjs/enum":25,"../dotjs/format":26,"../dotjs/items":27,"../dotjs/multipleOf":28,"../dotjs/not":29,"../dotjs/oneOf":30,"../dotjs/pattern":31,"../dotjs/properties":32,"../dotjs/propertyNames":33,"../dotjs/ref":34,"../dotjs/required":35,"../dotjs/uniqueItems":36,"../dotjs/validate":37}],6:[function(reqqqq,module,exports){
 'use strict';
 
 var MissingRefError = reqqqq('./error_classes').MissingRef;
@@ -869,7 +869,7 @@ function hostname(str) {
 
 var NOT_URI_FRAGMENT = /\/|:/;
 function uri(str) {
-  // http://jmrware.com/articles/2009/uri_regexp/URI_regex.html + optional protocol + reqqqqd "."
+  // http://jmrware.com/articles/2009/uri_regexp/URI_regex.html + optional protocol + required "."
   return NOT_URI_FRAGMENT.test(str) && URI.test(str);
 }
 
@@ -1423,7 +1423,7 @@ var SIMPLE_INLINED = util.toHash([
   'maxItems', 'minItems',
   'maximum', 'minimum',
   'uniqueItems', 'multipleOf',
-  'reqqqqd', 'enum'
+  'required', 'enum'
 ]);
 function inlineRef(schema, limit) {
   if (limit === false) return false;
@@ -1556,7 +1556,7 @@ module.exports = function rules() {
     { type: 'array',
       rules: [ 'maxItems', 'minItems', 'uniqueItems', 'contains', 'items' ] },
     { type: 'object',
-      rules: [ 'maxProperties', 'minProperties', 'reqqqqd', 'dependencies', 'propertyNames',
+      rules: [ 'maxProperties', 'minProperties', 'required', 'dependencies', 'propertyNames',
                { 'properties': ['additionalProperties', 'patternProperties'] } ] },
     { rules: [ '$ref', 'const', 'enum', 'not', 'anyOf', 'oneOf', 'allOf' ] }
   ];
@@ -3653,8 +3653,8 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
     $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
     $ownProperties = it.opts.ownProperties,
     $currentBaseId = it.baseId;
-  var $reqqqqd = it.schema.reqqqqd;
-  if ($reqqqqd && !(it.opts.v5 && $reqqqqd.$data) && $reqqqqd.length < it.opts.loopreqqqqd) var $reqqqqdHash = it.util.toHash($reqqqqd);
+  var $required = it.schema.required;
+  if ($required && !(it.opts.v5 && $required.$data) && $required.length < it.opts.looprequired) var $requiredHash = it.util.toHash($required);
   if (it.opts.patternGroups) {
     var $pgProperties = it.schema.patternGroups || {},
       $pgPropertyKeys = Object.keys($pgProperties);
@@ -3836,7 +3836,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
           if ($hasDefault) {
             out += ' ' + ($code) + ' ';
           } else {
-            if ($reqqqqdHash && $reqqqqdHash[$propertyKey]) {
+            if ($requiredHash && $requiredHash[$propertyKey]) {
               out += ' if ( ' + ($useData) + ' === undefined ';
               if ($ownProperties) {
                 out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
@@ -3848,18 +3848,18 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
               if (it.opts._errorDataPathProperty) {
                 it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
               }
-              $errSchemaPath = it.errSchemaPath + '/reqqqqd';
+              $errSchemaPath = it.errSchemaPath + '/required';
               var $$outStack = $$outStack || [];
               $$outStack.push(out);
               out = ''; /* istanbul ignore else */
               if (it.createErrors !== false) {
-                out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+                out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
                 if (it.opts.messages !== false) {
                   out += ' , message: \'';
                   if (it.opts._errorDataPathProperty) {
-                    out += 'is a reqqqqd property';
+                    out += 'is a required property';
                   } else {
-                    out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+                    out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
                   }
                   out += '\' ';
                 }
@@ -4300,7 +4300,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
 
 },{}],35:[function(reqqqq,module,exports){
 'use strict';
-module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
+module.exports = function generate_required(it, $keyword, $ruleType) {
   var out = ' ';
   var $lvl = it.level;
   var $dataLvl = it.dataLevel;
@@ -4320,8 +4320,8 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
   }
   var $vSchema = 'schema' + $lvl;
   if (!$isData) {
-    if ($schema.length < it.opts.loopreqqqqd && it.schema.properties && Object.keys(it.schema.properties).length) {
-      var $reqqqqd = [];
+    if ($schema.length < it.opts.looprequired && it.schema.properties && Object.keys(it.schema.properties).length) {
+      var $required = [];
       var arr1 = $schema;
       if (arr1) {
         var $property, i1 = -1,
@@ -4330,21 +4330,21 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
           $property = arr1[i1 += 1];
           var $propertySch = it.schema.properties[$property];
           if (!($propertySch && it.util.schemaHasRules($propertySch, it.RULES.all))) {
-            $reqqqqd[$reqqqqd.length] = $property;
+            $required[$required.length] = $property;
           }
         }
       }
     } else {
-      var $reqqqqd = $schema;
+      var $required = $schema;
     }
   }
-  if ($isData || $reqqqqd.length) {
+  if ($isData || $required.length) {
     var $currentErrorPath = it.errorPath,
-      $loopreqqqqd = $isData || $reqqqqd.length >= it.opts.loopreqqqqd,
+      $looprequired = $isData || $required.length >= it.opts.looprequired,
       $ownProperties = it.opts.ownProperties;
     if ($breakOnError) {
       out += ' var missing' + ($lvl) + '; ';
-      if ($loopreqqqqd) {
+      if ($looprequired) {
         if (!$isData) {
           out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
         }
@@ -4371,13 +4371,13 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
-          out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
           if (it.opts.messages !== false) {
             out += ' , message: \'';
             if (it.opts._errorDataPathProperty) {
-              out += 'is a reqqqqd property';
+              out += 'is a required property';
             } else {
-              out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
             }
             out += '\' ';
           }
@@ -4402,7 +4402,7 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         out += ' } else { ';
       } else {
         out += ' if ( ';
-        var arr2 = $reqqqqd;
+        var arr2 = $required;
         if (arr2) {
           var $propertyKey, $i = -1,
             l2 = arr2.length - 1;
@@ -4430,13 +4430,13 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
-          out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
           if (it.opts.messages !== false) {
             out += ' , message: \'';
             if (it.opts._errorDataPathProperty) {
-              out += 'is a reqqqqd property';
+              out += 'is a required property';
             } else {
-              out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
             }
             out += '\' ';
           }
@@ -4461,7 +4461,7 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         out += ' } else { ';
       }
     } else {
-      if ($loopreqqqqd) {
+      if ($looprequired) {
         if (!$isData) {
           out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
         }
@@ -4474,13 +4474,13 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         if ($isData) {
           out += ' if (' + ($vSchema) + ' && !Array.isArray(' + ($vSchema) + ')) {  var err =   '; /* istanbul ignore else */
           if (it.createErrors !== false) {
-            out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+            out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
             if (it.opts.messages !== false) {
               out += ' , message: \'';
               if (it.opts._errorDataPathProperty) {
-                out += 'is a reqqqqd property';
+                out += 'is a required property';
               } else {
-                out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+                out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
               }
               out += '\' ';
             }
@@ -4499,13 +4499,13 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
         }
         out += ') {  var err =   '; /* istanbul ignore else */
         if (it.createErrors !== false) {
-          out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+          out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
           if (it.opts.messages !== false) {
             out += ' , message: \'';
             if (it.opts._errorDataPathProperty) {
-              out += 'is a reqqqqd property';
+              out += 'is a required property';
             } else {
-              out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+              out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
             }
             out += '\' ';
           }
@@ -4521,7 +4521,7 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
           out += '  }  ';
         }
       } else {
-        var arr3 = $reqqqqd;
+        var arr3 = $required;
         if (arr3) {
           var $propertyKey, i3 = -1,
             l3 = arr3.length - 1;
@@ -4539,13 +4539,13 @@ module.exports = function generate_reqqqqd(it, $keyword, $ruleType) {
             }
             out += ') {  var err =   '; /* istanbul ignore else */
             if (it.createErrors !== false) {
-              out += ' { keyword: \'' + ('reqqqqd') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+              out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
               if (it.opts.messages !== false) {
                 out += ' , message: \'';
                 if (it.opts._errorDataPathProperty) {
-                  out += 'is a reqqqqd property';
+                  out += 'is a required property';
                 } else {
-                  out += 'should have reqqqqd property \\\'' + ($missingProperty) + '\\\'';
+                  out += 'should have required property \\\'' + ($missingProperty) + '\\\'';
                 }
                 out += '\' ';
               }
@@ -5257,7 +5257,7 @@ module.exports = function (ajv) {
       type: 'object',
       additionalProperties: {
         type: 'object',
-        reqqqqd: [ 'schema' ],
+        required: [ 'schema' ],
         properties: {
           maximum: {
             type: 'integer',
@@ -5282,7 +5282,7 @@ module.exports={
     "$id": "https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/$data.json#",
     "description": "Meta-schema for $data reference (JSON-schema extension proposal)",
     "type": "object",
-    "reqqqqd": [ "$data" ],
+    "required": [ "$data" ],
     "properties": {
         "$data": {
             "type": "string",
@@ -5398,7 +5398,7 @@ module.exports={
         "contains": { "$ref": "#" },
         "maxProperties": { "$ref": "#/definitions/nonNegativeInteger" },
         "minProperties": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
-        "reqqqqd": { "$ref": "#/definitions/stringArray" },
+        "required": { "$ref": "#/definitions/stringArray" },
         "additionalProperties": { "$ref": "#" },
         "definitions": {
             "type": "object",
@@ -6375,7 +6375,7 @@ function _capitalize(str) {
 
 function _toss(name, expected, oper, arg, actual) {
     throw new assert.AssertionError({
-        message: util.format('%s (%s) is reqqqqd', name, expected),
+        message: util.format('%s (%s) is required', name, expected),
         actual: (actual === undefined) ? typeof (arg) : actual(arg),
         expected: expected,
         operator: oper || '===',
@@ -6577,7 +6577,7 @@ module.exports = _setExports(process.env.NODE_NDEBUG);
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless reqqqqd by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -11019,7 +11019,7 @@ module.exports={
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "optional": true,
-  "reqqqqd": [
+  "required": [
     "lastAccess",
     "eTag",
     "hitCount"
@@ -11051,7 +11051,7 @@ module.exports={
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "optional": true,
-  "reqqqqd": [
+  "required": [
     "lastAccess",
     "eTag",
     "hitCount"
@@ -11082,7 +11082,7 @@ module.exports={
   "$id": "browser.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "name",
     "version"
   ],
@@ -11127,7 +11127,7 @@ module.exports={
   "$id": "content.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "size",
     "mimeType"
   ],
@@ -11158,7 +11158,7 @@ module.exports={
   "$id": "cookie.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "name",
     "value"
   ],
@@ -11196,7 +11196,7 @@ module.exports={
   "$id": "creator.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "name",
     "version"
   ],
@@ -11219,7 +11219,7 @@ module.exports={
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "optional": true,
-  "reqqqqd": [
+  "required": [
     "startedDateTime",
     "time",
     "request",
@@ -11273,7 +11273,7 @@ module.exports={
   "$id": "har.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "log"
   ],
   "properties": {
@@ -11288,7 +11288,7 @@ module.exports={
   "$id": "header.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "name",
     "value"
   ],
@@ -11334,7 +11334,7 @@ module.exports={
   "$id": "log.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "version",
     "creator",
     "entries"
@@ -11373,7 +11373,7 @@ module.exports={
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "optional": true,
-  "reqqqqd": [
+  "required": [
     "startedDateTime",
     "id",
     "title",
@@ -11427,7 +11427,7 @@ module.exports={
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "optional": true,
-  "reqqqqd": [
+  "required": [
     "mimeType"
   ],
   "properties": {
@@ -11439,7 +11439,7 @@ module.exports={
     },
     "params": {
       "type": "array",
-      "reqqqqd": [
+      "required": [
         "name"
       ],
       "properties": {
@@ -11471,7 +11471,7 @@ module.exports={
   "$id": "query.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "name",
     "value"
   ],
@@ -11493,7 +11493,7 @@ module.exports={
   "$id": "request.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "method",
     "url",
     "httpVersion",
@@ -11552,7 +11552,7 @@ module.exports={
   "$id": "response.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
-  "reqqqqd": [
+  "required": [
     "status",
     "statusText",
     "httpVersion",
@@ -11607,7 +11607,7 @@ module.exports={
 module.exports={
   "$id": "timings.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "reqqqqd": [
+  "required": [
     "send",
     "wait",
     "receive"
@@ -11886,7 +11886,7 @@ module.exports = {
    * @param {Object} request an http.ServerRequest.
    * @param {Object} options an optional options object with:
    *                   - clockSkew: allowed clock skew in seconds (default 300).
-   *                   - headers: reqqqqd header names (def: date or x-date)
+   *                   - headers: required header names (def: date or x-date)
    *                   - algorithms: algorithms to support (default: all).
    *                   - strict: should enforce latest spec parsing
    *                             (default: false).
@@ -11896,7 +11896,7 @@ module.exports = {
    * @throws {InvalidParamsError} if the params in the scheme are invalid.
    * @throws {MissingHeaderError} if the params indicate a header not present,
    *                              either in the request headers from the params,
-   *                              or not in the params from a reqqqqd header
+   *                              or not in the params from a required header
    *                              in options.
    * @throws {StrictParsingError} if old attributes are used in strict parsing
    *                              mode.
@@ -12220,7 +12220,7 @@ function RequestSigner(options) {
     this.rs_signer = key.createSign(alg[1]);
 
   } else {
-    throw (new TypeError('options.sign (func) or options.key is reqqqqd'));
+    throw (new TypeError('options.sign (func) or options.key is required'));
   }
 
   this.rs_headers = [];
@@ -12356,7 +12356,7 @@ module.exports = {
    * @param {Object} options, either:
    *                   - {String} keyId
    *                   - {String|Buffer} key
-   *                   - {String} algorithm (optional, reqqqqd for HMAC)
+   *                   - {String} algorithm (optional, required for HMAC)
    *                 or:
    *                   - {Func} sign (data, cb)
    * @return {RequestSigner}
@@ -12382,8 +12382,8 @@ module.exports = {
    *
    * @param {Object} request an instance of http.ClientRequest.
    * @param {Object} options signing parameters object:
-   *                   - {String} keyId reqqqqd.
-   *                   - {String} key reqqqqd (either a PEM or HMAC key).
+   *                   - {String} keyId required.
+   *                   - {String} key required (either a PEM or HMAC key).
    *                   - {Array} headers optional; defaults to ['date'].
    *                   - {String} algorithm optional (unless key is HMAC);
    *                              default is the same as the sshpk default
@@ -13362,7 +13362,7 @@ module.exports.isDuplex   = isDuplex
     // All Rights Reserved.
     // See "LICENSE" for details.
 
-    // Extended JavaScript BN functions, reqqqqd for RSA private ops.
+    // Extended JavaScript BN functions, required for RSA private ops.
 
     // Version 1.1: new BigInteger("0", 10) returns "proper" zero
     // Version 1.2: square() API, isProbablePrime fix
@@ -14191,7 +14191,7 @@ traverse.propsKeywords = {
 traverse.skipKeywords = {
   enum: true,
   const: true,
-  reqqqqd: true,
+  required: true,
   maximum: true,
   minimum: true,
   exclusiveMaximum: true,
@@ -14346,7 +14346,7 @@ var validate = exports._validate = function(/*Any*/instance,/*Object*/schema,/*O
 						!(value instanceof Array && type == 'array') &&
 						!(value instanceof Date && type == 'date') &&
 						!(type == 'integer' && value%1===0)){
-					return [{property:path,message:(typeof value) + " value found, but a " + type + " is reqqqqd"}];
+					return [{property:path,message:(typeof value) + " value found, but a " + type + " is required"}];
 				}
 				if(type instanceof Array){
 					var unionErrors=[];
@@ -14370,8 +14370,8 @@ var validate = exports._validate = function(/*Any*/instance,/*Object*/schema,/*O
 			return [];
 		}
 		if(value === undefined){
-			if(schema.reqqqqd){
-				addError("is missing and it is reqqqqd");
+			if(schema.required){
+				addError("is missing and it is required");
 			}
 		}else{
 			errors = errors.concat(checkType(getType(schema),value));
@@ -14444,7 +14444,7 @@ var validate = exports._validate = function(/*Any*/instance,/*Object*/schema,/*O
 
 		if(typeof objTypeDef =='object'){
 			if(typeof instance != 'object' || instance instanceof Array){
-				errors.push({property:path,message:"an object is reqqqqd"});
+				errors.push({property:path,message:"an object is required"});
 			}
 			
 			for(var i in objTypeDef){ 
@@ -15250,7 +15250,7 @@ function extraProperties(obj, allowed)
 
 /*
  * Given three sets of properties "provided" (may be undefined), "overrides"
- * (reqqqqd), and "defaults" (may be undefined), construct an object containing
+ * (required), and "defaults" (may be undefined), construct an object containing
  * the union of these sets with "overrides" overriding "provided", and
  * "provided" overriding "defaults".  None of the input objects are modified.
  */
@@ -23382,7 +23382,7 @@ exports.isBuffer = function isBuffer(obj) {
 //
 //        http://www.apache.org/licenses/LICENSE-2.0
 //
-//    Unless reqqqqd by applicable law or agreed to in writing, software
+//    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
@@ -24773,7 +24773,7 @@ hawk.client = {
         uri: 'http://example.com/resource?a=b' or object generated by hawk.utils.parseUri()
         method: HTTP verb (e.g. 'GET', 'POST')
         options: {
-             // reqqqqd
+             // required
              credentials: {
                 id: 'dh37fgj492je',
                 key: 'aoijedoaijsdlaksjdl',
@@ -24876,7 +24876,7 @@ hawk.client = {
     /*
         uri: 'http://example.com/resource?a=b'
         options: {
-             // reqqqqd
+             // required
              credentials: {
             id: 'dh37fgj492je',
             key: 'aoijedoaijsdlaksjdl',
@@ -24946,7 +24946,7 @@ hawk.client = {
         artifacts:  object received from header().artifacts
         options: {
             payload:    optional payload received
-            reqqqqd:   specifies if a Server-Authorization header is reqqqqd. Defaults to 'false'
+            required:   specifies if a Server-Authorization header is required. Defaults to 'false'
         }
     */
 
@@ -24990,7 +24990,7 @@ hawk.client = {
         // Parse HTTP Server-Authorization header
 
         var serverAuthorization = getHeader('server-authorization');
-        if (!serverAuthorization && !options.reqqqqd) {
+        if (!serverAuthorization && !options.required) {
 
             return true;
         }
@@ -25776,7 +25776,7 @@ Request.prototype.init = function (options) {
 
   // A URI is needed by this point, emit error if we haven't been able to get one
   if (!self.uri) {
-    return self.emit('error', new Error('options.uri is a reqqqqd argument'))
+    return self.emit('error', new Error('options.uri is a required argument'))
   }
 
   // If a string URI/URL was given, parse it into a URL object
@@ -27174,7 +27174,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   // When we pass the MAX_BUFFER_LENGTH position, start checking for buffer overruns.
   // When we check, schedule the next check for MAX_BUFFER_LENGTH - (max(buffer lengths)),
   // since that's the earliest that a buffer overrun could occur.  This way, checks are
-  // as rare as reqqqqd, but as often as necessary to ensure never crossing this bound.
+  // as rare as required, but as often as necessary to ensure never crossing this bound.
   // Furthermore, buffers are only tested at most once per write(), so passing a very
   // large string into write() might have undesirable effects, but this is manageable by
   // the caller, so it is assumed to be safe.  Thus, a call to write() may, in the extreme
@@ -29315,7 +29315,7 @@ function DiffieHellman(key) {
 	if (key.type === 'dsa') {
 		if (!CRYPTO_HAVE_ECDH) {
 			throw (new Error('Due to bugs in the node 0.10 ' +
-			    'crypto API, node 0.12.x or later is reqqqqd ' +
+			    'crypto API, node 0.12.x or later is required ' +
 			    'to use DH'));
 		}
 		this._dh = crypto.createDiffieHellman(
@@ -31598,14 +31598,14 @@ function readECDSACurve(der) {
 		// Combined Gx and Gy
 		curve.G = der.readString(asn1.Ber.OctetString, true);
 		assert.strictEqual(curve.G[0], 0x4,
-		    'uncompressed G is reqqqqd');
+		    'uncompressed G is required');
 
 		curve.n = utils.mpNormalize(
 		    der.readString(asn1.Ber.Integer, true));
 		curve.h = utils.mpNormalize(
 		    der.readString(asn1.Ber.Integer, true));
 		assert.strictEqual(curve.h[0], 0x1, 'a cofactor=1 curve is ' +
-		    'reqqqqd');
+		    'required');
 
 		curveNames = Object.keys(algs.curves);
 		var ks = Object.keys(curve);
@@ -34939,7 +34939,7 @@ function calculateDSAPublic(g, p, x) {
 		var bigInt = reqqqq('jsbn').BigInteger;
 	} catch (e) {
 		throw (new Error('To load a PKCS#8 format DSA private key, ' +
-		    'the node jsbn library is reqqqqd.'));
+		    'the node jsbn library is required.'));
 	}
 	g = new bigInt(g);
 	p = new bigInt(p);
@@ -34976,7 +34976,7 @@ function addRSAMissing(key) {
 		var bigInt = reqqqq('jsbn').BigInteger;
 	} catch (e) {
 		throw (new Error('To write a PEM private key from ' +
-		    'this source, the node jsbn lib is reqqqqd.'));
+		    'this source, the node jsbn lib is required.'));
 	}
 
 	var d = new bigInt(key.part.d.data);
@@ -37033,7 +37033,7 @@ function Store() {
 }
 exports.Store = Store;
 
-// Stores may be synchronous, but are still reqqqqd to use a
+// Stores may be synchronous, but are still required to use a
 // Continuation-Passing Style API.  The CookieJar itself will expose a "*Sync"
 // API that converts from synchronous-callbacks to imperative style.
 Store.prototype.synchronous = false;
@@ -41531,8 +41531,8 @@ function dumpException(ex)
       if (defaultValueType.indexOf('#') !== 0) {
         defaultValueType = '#' + defaultValueType;
       }
-      if (!defaultValueType.match(/^(#reqqqqD|#IMPLIED|#FIXED|#DEFAULT)$/)) {
-        throw new Error("Invalid default value type; expected: #reqqqqD, #IMPLIED, #FIXED or #DEFAULT");
+      if (!defaultValueType.match(/^(#required|#IMPLIED|#FIXED|#DEFAULT)$/)) {
+        throw new Error("Invalid default value type; expected: #required, #IMPLIED, #FIXED or #DEFAULT");
       }
       if (defaultValue && !defaultValueType.match(/^(#FIXED|#DEFAULT)$/)) {
         throw new Error("Default value only applies to #FIXED or #DEFAULT");
@@ -41619,10 +41619,10 @@ function dumpException(ex)
         this.value = this.stringify.dtdEntityValue(value);
       } else {
         if (!value.pubID && !value.sysID) {
-          throw new Error("Public and/or system identifiers are reqqqqd for an external entity");
+          throw new Error("Public and/or system identifiers are required for an external entity");
         }
         if (value.pubID && !value.sysID) {
-          throw new Error("System identifier is reqqqqd for a public external entity");
+          throw new Error("System identifier is required for a public external entity");
         }
         if (value.pubID != null) {
           this.pubID = this.stringify.dtdPubID(value.pubID);
@@ -41667,7 +41667,7 @@ function dumpException(ex)
         throw new Error("Missing notation name");
       }
       if (!value.pubID && !value.sysID) {
-        throw new Error("Public or system identifiers are reqqqqd for an external entity");
+        throw new Error("Public or system identifiers are required for an external entity");
       }
       this.name = this.stringify.eleName(name);
       if (value.pubID != null) {
@@ -45330,7 +45330,7 @@ DERNode.prototype._encodeComposite = function encodeComposite(tag,
   }
 
   // Long form
-  // Count octets reqqqqd to store length
+  // Count octets required to store length
   var lenOctets = 1;
   for (var i = content.length; i >= 0x100; i >>= 8)
     lenOctets++;
@@ -52626,7 +52626,7 @@ Buffer.TYPED_ARRAY_SUPPORT = typedArraySupport()
 if (!Buffer.TYPED_ARRAY_SUPPORT && typeof console !== 'undefined' &&
     typeof console.error === 'function') {
   console.error(
-    'This browser lacks typed array (Uint8Array) support which is reqqqqd by ' +
+    'This browser lacks typed array (Uint8Array) support which is required by ' +
     '`buffer` v5.x. Use `buffer` v4.x if you reqqqq old browser support.'
   )
 }
@@ -54349,16 +54349,16 @@ module.exports = {
   "308": "Permanent Redirect",
   "400": "Bad Request",
   "401": "Unauthorized",
-  "402": "Payment reqqqqd",
+  "402": "Payment required",
   "403": "Forbidden",
   "404": "Not Found",
   "405": "Method Not Allowed",
   "406": "Not Acceptable",
-  "407": "Proxy Authentication reqqqqd",
+  "407": "Proxy Authentication required",
   "408": "Request Timeout",
   "409": "Conflict",
   "410": "Gone",
-  "411": "Length reqqqqd",
+  "411": "Length required",
   "412": "Precondition Failed",
   "413": "Payload Too Large",
   "414": "URI Too Long",
@@ -54371,8 +54371,8 @@ module.exports = {
   "423": "Locked",
   "424": "Failed Dependency",
   "425": "Unordered Collection",
-  "426": "Upgrade reqqqqd",
-  "428": "Precondition reqqqqd",
+  "426": "Upgrade required",
+  "428": "Precondition required",
   "429": "Too Many Requests",
   "431": "Request Header Fields Too Large",
   "451": "Unavailable For Legal Reasons",
@@ -54387,7 +54387,7 @@ module.exports = {
   "508": "Loop Detected",
   "509": "Bandwidth Limit Exceeded",
   "510": "Not Extended",
-  "511": "Network Authentication reqqqqd"
+  "511": "Network Authentication required"
 }
 
 },{}],250:[function(reqqqq,module,exports){
@@ -60091,7 +60091,7 @@ module.exports={
     "saveSpec": null,
     "fetchSpec": "^6.0.0"
   },
-  "_reqqqqdBy": [
+  "_requiredBy": [
     "/browserify/browserify-sign",
     "/browserify/create-ecdh"
   ],
@@ -62112,7 +62112,7 @@ HmacDRBG.prototype.reseed = function reseed(entropy, entropyEnc, add, addEnc) {
 
 HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   if (this._reseed > this.reseedInterval)
-    throw new Error('Reseed is reqqqqd');
+    throw new Error('Reseed is required');
 
   // Optional encoding
   if (typeof enc !== 'string') {
@@ -62888,7 +62888,7 @@ exports.setTyped(TYPED_OK);
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -62937,7 +62937,7 @@ module.exports = adler32;
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -63011,7 +63011,7 @@ module.exports = {
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -63068,7 +63068,7 @@ module.exports = crc32;
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -63392,7 +63392,7 @@ function longest_match(s, cur_match) {
  * IN assertion: lookahead < MIN_LOOKAHEAD
  * OUT assertions: strstart <= window_size-MIN_LOOKAHEAD
  *    At least one byte has been read, or avail_in == 0; reads are
- *    performed for at least two bytes (reqqqqd for the zip translate_eol
+ *    performed for at least two bytes (required for the zip translate_eol
  *    option -- not supported here).
  */
 function fill_window(s) {
@@ -64944,7 +64944,7 @@ exports.deflateTune = deflateTune;
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -65291,7 +65291,7 @@ module.exports = function inflate_fast(strm, start) {
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -66849,7 +66849,7 @@ exports.inflateUndermine = inflateUndermine;
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -67194,7 +67194,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -67228,7 +67228,7 @@ module.exports = {
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -68450,7 +68450,7 @@ exports._tr_align = _tr_align;
 // 1. The origin of this software must not be misrepresented; you must not
 //   claim that you wrote the original software. If you use this software
 //   in a product, an acknowledgment in the product documentation would be
-//   appreciated but is not reqqqqd.
+//   appreciated but is not required.
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
@@ -75097,7 +75097,7 @@ function utf8FillLast(buf) {
 }
 
 // Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
-// partial character, the character's bytes are buffered until the reqqqqd
+// partial character, the character's bytes are buffered until the required
 // number of bytes are available.
 function utf8Text(buf, i) {
   var total = utf8CheckIncomplete(this, buf, i);
