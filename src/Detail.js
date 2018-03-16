@@ -31,7 +31,7 @@ export default class Detail extends Component {
       },
       body: JSON.stringify(sendData),
     })).json();
-
+    console.log(postImageResponse);
     this.getAnalysisUrl = `https://api.cloudsight.ai/v1/images/${postImageResponse.token}`;
     this.setState({ postImageStatus: postImageResponse.status });
   }

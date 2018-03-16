@@ -6,7 +6,7 @@ import {
   FlatList,
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
-import generateUrl from '../util/index';
+import getResultAmazon from '../util/index';
 
 export default class Result extends Component {
   constructor(props) {
@@ -29,10 +29,7 @@ export default class Result extends Component {
 
     console.log(analysisResult);
 
-    const amazonUrl = generateUrl(analysisResult.name);
-    console.log(amazonUrl);
-
-    const amazonResult = await (await fetch(amazonUrl)).text();
+    const amazonResult = await getResultAmazon('Nike Shoes');
     console.log(amazonResult);
   }
 
