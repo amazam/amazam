@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  Button,
-  FlatList,
+  ScrollView,
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 import getResultAmazon from '../util/index';
@@ -31,26 +29,20 @@ class ResultScreen extends Component {
     const amazonResult = await getResultAmazon(analysisResult.name);
     this.setState({ products: amazonResult });
 
-    console.log('########## AMAZON RESULT- START ##########');
     console.log(amazonResult);
   }
 
   renderProducts() {
-    console.log(this.state.products);
     return this.state.products.map(product =>
-      // <Text key={product.ASIN[0]}>{product.ItemAttributes[0].Title[0]}</Text>
-      <ResultDetail key={product.ASIN} product={product} />
-    );
+      <ResultDetail key={product.ASIN} product={product} />);
   }
 
   render() {
     return (
-      <View>
-        {/* <FlatList
-          data={this.state.item.map(eachItem => ({ key: eachItem.ItemAttributes[0].Title[0] }))}
-          renderItem={({ item }) => <Text>{item.key}</Text>}
-        /> */}
-        {this.renderProducts()}
+      <View style={{ flex: 1 }}>
+        <ScrollView>
+          {this.renderProducts()}
+        </ScrollView>
       </View>
     );
   }
