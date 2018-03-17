@@ -3,9 +3,11 @@ import {
   View,
   Text,
   Image,
+  Linking,
 } from 'react-native';
 import Card from './Card';
 import CardSection from './CardSection';
+import ResultButton from './ResultButton';
 
 const ResultDetail = ({ product }) => {
   return (
@@ -26,7 +28,13 @@ const ResultDetail = ({ product }) => {
       </CardSection>
 
       <CardSection>
-          <Text>{product.ItemAttributes[0].Title[0]}</Text>
+        <Text>{product.ItemAttributes[0].Title[0]}</Text>
+      </CardSection>
+
+      <CardSection>
+        <ResultButton onPress={() => Linking.openURL(product.DetailPageURL[0])}>
+          Go to Amazon
+        </ResultButton>
       </CardSection>
     </Card>
   );
@@ -38,7 +46,7 @@ const styles = {
     justifyContent: 'space-around',
   },
   headerTextStyle: {
-    fontSize: 18,
+    fontSize: 20, 
   },
   thumbnailStyle: {
     height: 50,
