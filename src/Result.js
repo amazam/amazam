@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 import getResultAmazon from '../util/index';
+import ResultDetail from './ResultDetail';
 
 class ResultScreen extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class ResultScreen extends Component {
     const { params } = this.props.navigation.state;
     this.getAnalysisUrl = params ? params.url : 'Failure';
 
-    this.state = { item: [] };
+    this.state = { products: [] };
   }
 
   async componentDidMount() {
@@ -27,24 +28,29 @@ class ResultScreen extends Component {
       },
     })).json();
 
-    console.log('RESULT COMPONENT:', this.getAnalysisUrl);
-
     const amazonResult = await getResultAmazon(analysisResult.name);
-    this.setState({ item: amazonResult });
+    this.setState({ products: amazonResult });
 
     console.log('########## AMAZON RESULT- START ##########');
     console.log(amazonResult);
-    console.log('########## AMAZON RESULT - END ##########');
+  }
+
+  renderProducts() {
+    console.log(this.state.products);
+    return this.state.products.map(product =>
+      // <Text key={product.ASIN[0]}>{product.ItemAttributes[0].Title[0]}</Text>
+      <ResultDetail key={product.ASIN} product={product} />
+    );
   }
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Hello</Text>
-        <FlatList
-          data={this.state.item.map(eachItem => ({ key: eachItem.DetailPageURL[0] }))}
+      <View>
+        {/* <FlatList
+          data={this.state.item.map(eachItem => ({ key: eachItem.ItemAttributes[0].Title[0] }))}
           renderItem={({ item }) => <Text>{item.key}</Text>}
-        />
+        /> */}
+        {this.renderProducts()}
       </View>
     );
   }

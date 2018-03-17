@@ -14,7 +14,7 @@ class CameraScreen extends React.Component {
   
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
+      const options = { quality: 0.6, base64: true };
       const data = await this.camera.takePictureAsync(options);
       this.props.navigation.navigate('Detail', {
         picture: data.base64,
@@ -30,7 +30,7 @@ class CameraScreen extends React.Component {
           ref={(ref) => { this.camera = ref; }}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
+          flashMode={RNCamera.Constants.FlashMode.auto}
           permissionDialogTitle="Permission to use camera"
           permissionDialogMessage="We need your permission to use your camera phone"
         />

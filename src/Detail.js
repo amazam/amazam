@@ -3,6 +3,7 @@ import {
   Text,
   View,
   Button,
+  ActivityIndicator
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 
@@ -45,8 +46,8 @@ class DetailScreen extends Component {
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-        <Text>response: {this.state.postImageStatus}</Text>
+        {/* <Text>{this.state.postImageStatus}</Text> */}
+        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
         <Button
           title="Go to get the analysis"
           onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
