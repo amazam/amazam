@@ -8,7 +8,7 @@ import {
 import { CLOUDSIGHT } from 'react-native-dotenv';
 import getResultAmazon from '../util/index';
 
-export default class Result extends Component {
+class ResultScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -27,8 +27,14 @@ export default class Result extends Component {
       },
     })).json();
 
+    console.log('RESULT COMPONENT:', this.getAnalysisUrl);
+
     const amazonResult = await getResultAmazon(analysisResult.name);
     this.setState({ item: amazonResult });
+
+    console.log('########## AMAZON RESULT- START ##########');
+    console.log(amazonResult);
+    console.log('########## AMAZON RESULT - END ##########');
   }
 
   render() {
@@ -39,11 +45,9 @@ export default class Result extends Component {
           data={this.state.item.map(eachItem => ({ key: eachItem.DetailPageURL[0] }))}
           renderItem={({ item }) => <Text>{item.key}</Text>}
         />
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
-        />
       </View>
     );
   }
 }
+
+export default ResultScreen;

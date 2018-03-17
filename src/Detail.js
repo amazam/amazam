@@ -10,7 +10,7 @@ import { CLOUDSIGHT } from 'react-native-dotenv';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
 const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
-export default class Detail extends Component {
+class DetailScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -51,13 +51,11 @@ export default class Detail extends Component {
           title="Go to get the analysis"
           onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
             url: this.getAnalysisUrl,
-          }), 5000)}
-        />
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
+          }), 1)}
         />
       </View>
     );
   }
 }
+
+export default DetailScreen;

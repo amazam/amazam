@@ -1,6 +1,6 @@
 import { AMAZON_ACCESS_KEY, AMAZON_ASSOCIATE_ID, AMAZON_SECRET_KEY } from 'react-native-dotenv';
 
-const amazon = require('../amazon-product-api');
+const amazon = require('./amazon-product-api');
 
 const getResultAmazon = async (item) => {
   const client = amazon.createClient({
@@ -14,6 +14,8 @@ const getResultAmazon = async (item) => {
     itemPage: '1',
     responseGroup: 'ItemAttributes,Offers,Images',
   });
+
+  console.log(result);
   return result;
 };
 

@@ -1,19 +1,19 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import Camera from './Camera';
-import Detail from './Detail';
-import Result from './Result';
+import CameraScreen from './Camera';
+import DetailScreen from './Detail';
+import ResultScreen from './Result';
 
 const RootStack = StackNavigator(
   {
     Home: {
-      screen: Camera,
+      screen: CameraScreen,
     },
-    Details: {
-      screen: Detail,
+    Detail: {
+      screen: DetailScreen,
     },
     Result: {
-      screen: Result,
+      screen: ResultScreen,
     },
   },
   {
