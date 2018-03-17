@@ -6,6 +6,10 @@ import {
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 
+// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
+const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+
 export default class Detail extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +26,9 @@ export default class Detail extends Component {
       locale: 'en_US',
     };
 
-    const postImageResponse = await (await fetch('https://api.cloudsight.ai/v1/images', {
+    console.log(CLOUDSIGHTSERVER);
+
+    const postImageResponse = await (await fetch(CLOUDSIGHTSERVER, {
       method: 'POST',
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
@@ -32,7 +38,7 @@ export default class Detail extends Component {
       body: JSON.stringify(sendData),
     })).json();
 
-    this.getAnalysisUrl = `https://api.cloudsight.ai/v1/images/${postImageResponse.token}`;
+    this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${postImageResponse.token}`;
     this.setState({ postImageStatus: postImageResponse.status });
   }
 
