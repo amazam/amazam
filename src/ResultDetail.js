@@ -25,10 +25,15 @@ const ResultDetail = ({ product }) => {
             {product.ItemAttributes[0].Binding[0]} | {product.ItemAttributes[0].ProductTypeName[0].toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
           </Text>
         </View>
+        <View style={styles.priceContentStyle}>
+          <Text style={styles.priceTextStyle}>
+            {product.ItemAttributes[0].ListPrice !== undefined ? product.ItemAttributes[0].ListPrice[0].FormattedPrice : ''}
+          </Text>
+        </View>
       </CardSection>
 
       <CardSection>
-        <Text>{product.ItemAttributes[0].Title[0]}</Text>
+        <Text>{JSON.stringify(product.ItemAttributes[0].Title[0])}</Text>
       </CardSection>
 
       <CardSection>
@@ -46,7 +51,15 @@ const styles = {
     justifyContent: 'space-around',
   },
   headerTextStyle: {
-    fontSize: 20, 
+    fontSize: 20,
+  },
+  priceContentStyle: {
+    justifyContent: 'center',
+    flex: 2,
+  },
+  priceTextStyle: {
+    fontSize: 20,
+    textAlign: 'right',
   },
   thumbnailStyle: {
     height: 50,

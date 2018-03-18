@@ -12,10 +12,9 @@ const getResultAmazon = async (item) => {
   const result = await client.itemSearch({
     keywords: item,
     itemPage: '1',
-    responseGroup: 'ItemAttributes,Offers,Images',
+    responseGroup: 'ItemAttributes, Images',
   });
 
-  console.log(result);
   return result;
 };
 
