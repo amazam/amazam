@@ -6,6 +6,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
+import axios from 'axios';
 
 // const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
@@ -27,20 +28,19 @@ class DetailScreen extends Component {
       locale: 'en_US',
     };
 
-    console.log(CLOUDSIGHTSERVER);
-
-    const postImageResponse = await (await fetch(CLOUDSIGHTSERVER, {
-      method: 'POST',
+    axios.post(CLOUDSIGHTSERVER, {
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(sendData),
-    })).json();
-
-    this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${postImageResponse.token}`;
-    this.setState({ postImageStatus: postImageResponse.status });
+    })
+      .then((response) => {
+        this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${response.data.token}`;
+        this.setState({ postImageStatus: response.status });
+      })
+      .catch(error => console.log(error));
   }
 
   render() {

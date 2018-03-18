@@ -3,9 +3,11 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import { CLOUDSIGHT } from 'react-native-dotenv';
-import getResultAmazon from '../util/index';
+import axios from 'axios';
 import ResultDetail from './ResultDetail';
+import { AMAZON_ACCESS_KEY, AMAZON_ASSOCIATE_ID, AMAZON_SECRET_KEY } from 'react-native-dotenv';
+
+const amazon = require('../util/amazon-product-api');
 
 class ResultScreen extends Component {
   constructor(props) {
@@ -18,18 +20,30 @@ class ResultScreen extends Component {
   }
 
   async componentDidMount() {
-    const analysisResult = await (await fetch(this.getAnalysisUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `CloudSight ${CLOUDSIGHT}`,
-        'Cache-Control': 'no-cache',
-      },
-    })).json();
+    const client = amazon.createClient({
+      awsId: AMAZON_ACCESS_KEY,
+      awsSecret: AMAZON_SECRET_KEY,
+      awsTag: AMAZON_ASSOCIATE_ID,
+    });
 
-    const amazonResult = await getResultAmazon(analysisResult.name);
-    this.setState({ products: amazonResult });
+    axios.get(this.getAnalysisUrl)
+      .then((imageResult) => {
+        console.log(imageResult);
 
-    console.log(amazonResult);
+        client.itemSearch({
+          keywords: imageResult.data.name,
+          itemPage: '1',
+          responseGroup: 'ItemAttributes, Images',
+        })
+          .then((amazonResult) => {
+            this.setState({ products: amazonResult });
+            console.log(amazonResult);
+          })
+          .catch((amazonError) => {
+            console.log(amazonError);
+          });
+      })
+      .catch(imageError => console.log(imageError));
   }
 
   renderProducts() {
