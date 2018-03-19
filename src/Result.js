@@ -116,7 +116,7 @@ class ResultScreen extends Component {
 
     _getImageResult()
       .then(_imageResult => {
-        console.log(_imageResult);
+        console.log(_imageResult.data);
         this.imageResult = _imageResult;
         this.getProductResult();
       })
@@ -153,7 +153,7 @@ class ResultScreen extends Component {
         });
       })
       .catch((amazonError) => {
-        console.warn('aaaaaaaaa', amazonError);
+        console.warn('amazonError', amazonError);
         this.setState({ result: 'error' });
       });
 }

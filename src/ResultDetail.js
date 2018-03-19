@@ -16,13 +16,15 @@ const ResultDetail = ({ product }) => {
         <View style={styles.thumbnailContainerStyle}>
           <Image
             style={styles.thumbnailStyle}
-            source={{ uri: product.SmallImage[0].URL[0] }}
+            source={{ uri: product.SmallImage !== undefined ? product.SmallImage[0].URL[0] : 'http://howmadareyou.com/wp-content/themes/MAD/images/default_thumbnail.jpg' }}
           />
         </View>
         <View style={styles.headerContentStyle}>
-          <Text style={styles.headerTextStyle}>{product.ItemAttributes[0].Brand[0]}</Text>
+          <Text style={styles.headerTextStyle}>
+            {product.ItemAttributes[0].Brand !== undefined ? product.ItemAttributes[0].Brand[0] : 'Product'}
+          </Text>
           <Text>
-            {product.ItemAttributes[0].Binding[0]} | {product.ItemAttributes[0].ProductTypeName[0].toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+            {product.ItemAttributes[0].Binding !== undefined ? product.ItemAttributes[0].Binding[0] : 'Product Group'}
           </Text>
         </View>
         <View style={styles.priceContentStyle}>
@@ -56,6 +58,7 @@ const styles = {
   priceContentStyle: {
     justifyContent: 'center',
     flex: 2,
+    marginRight: 10,
   },
   priceTextStyle: {
     fontSize: 20,
