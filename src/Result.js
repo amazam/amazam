@@ -18,9 +18,9 @@ import ResultDetail from './ResultDetail';
 
 const amazon = require('../util/amazon-product-api');
 
-const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
-// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 class ResultScreen extends Component {
   static navigationOptions = {
@@ -50,7 +50,7 @@ class ResultScreen extends Component {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Button
             title="Retry to get the product pages."
-            onPress={() => this.getProducts()}
+            onPress={() => this.getImageResult()}
           />
         </View>
       );
@@ -70,45 +70,49 @@ class ResultScreen extends Component {
     );
   }
 
-  getProducts() {
+  getImageResult() {
+    axios.get(this.state.analysisUrl)
+      .then((_imageResult) => {
+        console.log(imageResult);
+        this.imageResult = _imageResult;
+        getProductResult();
+      })
+      .catch((imageError) => {
+        Alert.alert(
+          'Error happens',
+          'Take a picture once again',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+          ],
+          { cancelable: false },
+        );
+      });
+  }
+
+  getProductResult() {
     const client = amazon.createClient({
       awsId: AMAZON_ACCESS_KEY,
       awsSecret: AMAZON_SECRET_KEY,
       awsTag: AMAZON_ASSOCIATE_ID,
     });
 
-    axios.get(this.state.analysisUrl)
-      .then((imageResult) => {
-        console.log(imageResult);
-
-        client.itemSearch({
-          keywords: imageResult.data.name,
-          itemPage: '1',
-          responseGroup: 'ItemAttributes, Images',
-        })
-          .then((amazonResult) => {
-            console.log(amazonResult);
-            this.setState({
-              products: amazonResult,
-              result: 'success',
-            });
-          })
-          .catch((amazonError) => {
-            console.log(amazonError);
-            this.setState({ result: 'error' });
-          })
-        })
-        .catch((imageError) => {
-          Alert.alert(
-            'Error happens',
-            'Take a picture once again',
-            [
-              {text: 'OK', onPress: () => this.props.navigation.goBack()}
-            ],
-            { cancelable: false },
-          );
+    client.itemSearch({
+      keywords: this.imageResult.data.name,
+      itemPage: '1',
+      responseGroup: 'ItemAttributes, Images',
+    })
+      .then((amazonResult) => {
+        console.log(amazonResult);
+        this.setState({
+          products: amazonResult,
+          result: 'success',
         });
-  }
+      })
+      .catch((amazonError) => {
+        console.log(amazonError);
+        this.setState({ result: 'error' });
+      });
+}
 
   postImageApi() {
     const sendData = {
@@ -128,7 +132,7 @@ class ResultScreen extends Component {
         this.setState({
           analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
         });
-        this.getProducts();
+        this.getImageResult();
       })
       .catch((error) => {
         Alert.alert(
