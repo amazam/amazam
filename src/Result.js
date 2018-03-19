@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Button,
   ScrollView,
   View,
@@ -17,9 +18,9 @@ import ResultDetail from './ResultDetail';
 
 const amazon = require('../util/amazon-product-api');
 
-// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
-const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 class ResultScreen extends Component {
   static navigationOptions = {
@@ -48,8 +49,8 @@ class ResultScreen extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Button
-            title="Retry"
-            onPress={() => this.postImageApi()}
+            title="Retry to get the product pages."
+            onPress={() => this.getProducts()}
           />
         </View>
       );
@@ -94,12 +95,19 @@ class ResultScreen extends Component {
           })
           .catch((amazonError) => {
             console.log(amazonError);
+            this.setState({ result: 'error' });
           })
-      })
-      .catch((imageError) => {
-        console.error(imageError);
-        this.setState({ result: 'error' });
-      });
+        })
+        .catch((imageError) => {
+          Alert.alert(
+            'Error happens',
+            'Take a picture once again',
+            [
+              {text: 'OK', onPress: () => this.props.navigation.goBack()}
+            ],
+            { cancelable: false },
+          );
+        });
   }
 
   postImageApi() {
@@ -123,8 +131,14 @@ class ResultScreen extends Component {
         this.getProducts();
       })
       .catch((error) => {
-        console.error(error);
-        this.setState({ result: 'error' });
+        Alert.alert(
+          'Error happens',
+          'Take a picture once again',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+          ],
+          { cancelable: false },
+        );
       });
   }
 
