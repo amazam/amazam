@@ -53,10 +53,6 @@ class ResultScreen extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
-          <Button
-            title="Go to get the analysis"
-            onPress={() => this.getProducts()}
-          />
         </View>
       );
     }
@@ -91,7 +87,6 @@ class ResultScreen extends Component {
               products: amazonResult,
               result: 'success',
             });
-            this.getProducts();
           })
           .catch((amazonError) => {
             console.log(amazonError);
@@ -121,6 +116,7 @@ class ResultScreen extends Component {
         this.setState({
           analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
         });
+        this.getProducts();
       })
       .catch((error) => {
         console.error(error);
