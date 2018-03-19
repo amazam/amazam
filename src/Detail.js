@@ -3,7 +3,7 @@ import {
   Text,
   View,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 import axios from 'axios';
@@ -15,14 +15,43 @@ const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock
 class DetailScreen extends Component {
   constructor(props) {
     super(props);
+    this.postImageApi = this.postImageApi.bind(this);
 
     const { params } = this.props.navigation.state;
     this.picture = params ? params.picture : 'Failure';
 
-    this.state = { postImageStatus: null };
+    this.state = { result: true };
   }
 
   async componentDidMount() {
+    this.postImageApi();
+  }
+
+  get currentView() {
+    if (this.state.result === false) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Button
+            title="Retry"
+            onPress={() => this.postImageApi()}
+          />
+        </View>
+      );
+    }
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
+        <Button
+          title="Go to get the analysis"
+          onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
+            url: this.getAnalysisUrl,
+          }), 1)}
+        />
+      </View>
+    );
+  }
+
+  postImageApi() {
     const sendData = {
       image: `data:image/png;base64,${this.picture}`,
       locale: 'en_US',
@@ -38,24 +67,16 @@ class DetailScreen extends Component {
     })
       .then((response) => {
         this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${response.data.token}`;
-        this.setState({ postImageStatus: response.status });
+        this.setState({ result: true });
       })
-      .catch(error => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        this.setState({ result: false });
+      });
   }
 
   render() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        {/* <Text>{this.state.postImageStatus}</Text> */}
-        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
-        <Button
-          title="Go to get the analysis"
-          onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
-            url: this.getAnalysisUrl,
-          }), 1)}
-        />
-      </View>
-    );
+    return this.currentView;
   }
 }
 
