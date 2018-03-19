@@ -1,3 +1,4 @@
+import RNFetchBlob from 'react-native-fetch-blob';
 import React from 'react';
 import {
   Image,
@@ -17,7 +18,19 @@ import {
 
 
 const SelectedPhoto = (props) => {
-  const { uri } = props;
+  // uri is a shown as {uri: "content://media/external/images/media/18"}
+  const { uri, navigation } = props;
+  const data = { uri };
+  const dataToBase64 = RNFetchBlob.fs.readFile(RNFetchBlob.wrap(uri), 'base64')
+    .then((newData) => {
+      console.log('newData shows: ', newData);
+      return newData;
+    })
+    .catch((err) => {
+      console.log('ERROR shows: ', err);
+      return err;
+    });
+  console.log('select photo props', props, dataToBase64);
 
   return (
     <View style={styles.container}>
@@ -26,7 +39,12 @@ const SelectedPhoto = (props) => {
         style={styles.image}
       />
       <TouchableHighlight
-        onPress={() => console.log('test')}
+        onPress={() => {
+          console.log('send picture to image recognition API', data);
+          navigation.navigate('Detail', {
+            picture: dataToBase64,
+          });
+        }}
         style={styles.sendPictureToAnalyze}
       >
         <Text style={{ fontSize: 14, color: 'white' }}> Analyze Picture </Text>

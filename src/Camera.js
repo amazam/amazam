@@ -24,6 +24,7 @@ class CameraScreen extends React.Component {
     if (this.camera) {
       const options = { quality: 0.6, base64: true };
       const data = await this.camera.takePictureAsync(options);
+      console.log("camera.js data await shows: ", data);
       this.props.navigation.navigate('Detail', {
         picture: data.base64,
       });
@@ -44,7 +45,8 @@ class CameraScreen extends React.Component {
     if (this.state.showPhotoGallery) {
       return (
         <ViewPhotos
-          photoArray={this.state.photoArray} />
+          photoArray={this.state.photoArray}
+          navigation={this.props.navigation} />
       )
     }
     const { navigate } = this.props.navigation;
@@ -58,6 +60,7 @@ class CameraScreen extends React.Component {
           permissionDialogTitle="Permission to use camera"
           permissionDialogMessage="We need your permission to use your camera phone"
         />
+        <View style={styles.bottomButtons}>
         <View style={styles.takepictureButton}>
           <TouchableOpacity
             onPress={this.takePicture}
@@ -72,7 +75,8 @@ class CameraScreen extends React.Component {
           style={styles.capture}>
           <Text style={{ fontSize: 14 }}> CameraRoll </Text>
         </TouchableHighlight>
-      </View>
+        </View>
+        </View>
       </View>
     );  
   }
@@ -84,15 +88,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'black',
   },
+  bottomButtons: {
+    flex: 0,
+    flexDirection: 'row', 
+    justifyContent: 'center',
+  },
   takepictureButton: {
     flex: 0,
     flexDirection: 'row', 
-    justifyContent: 'center'
+    
   },
   cameraRollButton: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row', 
-    justifyContent: 'center'
   },
   preview: {
     flex: 1,

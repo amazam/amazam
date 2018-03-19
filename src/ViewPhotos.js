@@ -12,12 +12,15 @@ import {
 import SelectedPhoto from './SelectedPhoto';
 
 class ViewPhotos extends Component {
-  state = {
-    data: new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    }),
-    showSelectedPhoto: false,
-    uri: ''
+  constructor(props){
+    super(props);
+    this.state = {
+      data: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+      showSelectedPhoto: false,
+      uri: ''
+    }
   }
 
   renderRow(rowData) {
@@ -38,7 +41,8 @@ class ViewPhotos extends Component {
     if (showSelectedPhoto) {
       return (
         <SelectedPhoto
-          uri={uri} />
+          uri={uri}
+          navigation={this.props.navigation} />
       )
     }
     return (
