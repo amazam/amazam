@@ -3,7 +3,7 @@ import {
   Text,
   View,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import {
   CLOUDSIGHT,
@@ -28,32 +28,35 @@ class DetailScreen extends Component {
 
     this.state = {
       analysisUrl: null,
-      postImageStatus: null,
       products: [],
+      result: true,
     };
   }
 
-  componentDidMount() {
-    const sendData = {
-      image: `data:image/png;base64,${this.picture}`,
-      locale: 'en_US',
-    };
+  async componentDidMount() {
+    this.postImageApi();
+  }
 
-    axios.post(CLOUDSIGHTSERVER, {
-      headers: {
-        Authorization: `CloudSight ${CLOUDSIGHT}`,
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(sendData),
-    })
-      .then((response) => {
-        this.setState({
-          analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
-          postImageStatus: response.status,
-        });
-      })
-      .catch(error => console.error(error));
+  get currentView() {
+    if (this.state.result === false) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Button
+            title="Retry"
+            onPress={() => this.postImageApi()}
+          />
+        </View>
+      );
+    }
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
+        <Button
+          title="Go to get the analysis"
+          onPress={() => this.getProducts()}
+        />
+      </View>
+    );
   }
 
   getProducts() {
@@ -79,25 +82,44 @@ class DetailScreen extends Component {
           .catch((amazonError) => {
             console.log(amazonError);
           })
-            .then(() => {
-              setTimeout(() => this.props.navigation.navigate('Result', { products: this.state.products }), 1);
-            })
+          .then(() => {
+            setTimeout(() => this.props.navigation.navigate('Result', { products: this.state.products }), 1);
+          });
       })
-      .catch(imageError => console.log(imageError));
+      .catch((imageError) => {
+        console.error(imageError);
+        this.setState({ result: false });
+      });
+  }
+
+  postImageApi() {
+    const sendData = {
+      image: `data:image/png;base64,${this.picture}`,
+      locale: 'en_US',
+    };
+
+    axios.post(CLOUDSIGHTSERVER, {
+      headers: {
+        Authorization: `CloudSight ${CLOUDSIGHT}`,
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(sendData),
+    })
+      .then((response) => {
+        this.setState({
+          analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
+          result: true,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ result: false });
+      });
   }
 
   render() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
-        <Button
-          title="Go to get the analysis"
-          onPress={() => {
-            this.getProducts();
-          }}
-        />
-      </View>
-    );
+    return this.currentView;
   }
 }
 
