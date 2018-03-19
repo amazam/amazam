@@ -5,8 +5,15 @@ import {
   Button,
   ActivityIndicator
 } from 'react-native';
-import { CLOUDSIGHT } from 'react-native-dotenv';
+import {
+  CLOUDSIGHT,
+  AMAZON_ACCESS_KEY,
+  AMAZON_ASSOCIATE_ID,
+  AMAZON_SECRET_KEY,
+} from 'react-native-dotenv';
 import axios from 'axios';
+
+const amazon = require('../util/amazon-product-api');
 
 // const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
@@ -19,10 +26,14 @@ class DetailScreen extends Component {
     const { params } = this.props.navigation.state;
     this.picture = params ? params.picture : 'Failure';
 
-    this.state = { postImageStatus: null };
+    this.state = {
+      analysisUrl: null,
+      postImageStatus: null,
+      products: [],
+    };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const sendData = {
       image: `data:image/png;base64,${this.picture}`,
       locale: 'en_US',
@@ -37,22 +48,53 @@ class DetailScreen extends Component {
       body: JSON.stringify(sendData),
     })
       .then((response) => {
-        this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${response.data.token}`;
-        this.setState({ postImageStatus: response.status });
+        this.setState({
+          analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
+          postImageStatus: response.status,
+        });
       })
       .catch(error => console.error(error));
+  }
+
+  getProducts() {
+    const client = amazon.createClient({
+      awsId: AMAZON_ACCESS_KEY,
+      awsSecret: AMAZON_SECRET_KEY,
+      awsTag: AMAZON_ASSOCIATE_ID,
+    });
+
+    axios.get(this.state.analysisUrl)
+      .then((imageResult) => {
+        console.log(imageResult);
+
+        client.itemSearch({
+          keywords: imageResult.data.name,
+          itemPage: '1',
+          responseGroup: 'ItemAttributes, Images',
+        })
+          .then((amazonResult) => {
+            this.setState({ products: amazonResult });
+            console.log(amazonResult);
+          })
+          .catch((amazonError) => {
+            console.log(amazonError);
+          })
+            .then(() => {
+              setTimeout(() => this.props.navigation.navigate('Result', { products: this.state.products }), 1);
+            })
+      })
+      .catch(imageError => console.log(imageError));
   }
 
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        {/* <Text>{this.state.postImageStatus}</Text> */}
         <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
         <Button
           title="Go to get the analysis"
-          onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
-            url: this.getAnalysisUrl,
-          }), 1)}
+          onPress={() => {
+            this.getProducts();
+          }}
         />
       </View>
     );
