@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Button,
   ScrollView,
   View,
@@ -17,9 +18,9 @@ import ResultDetail from './ResultDetail';
 
 const amazon = require('../util/amazon-product-api');
 
-// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
-const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 class ResultScreen extends Component {
   static navigationOptions = {
@@ -48,8 +49,11 @@ class ResultScreen extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Button
-            title="Retry"
-            onPress={() => this.postImageApi()}
+            title="Retry to get the product pages"
+            onPress={() => {
+              this.setState({ result: 'processing' });
+              this.getProductResult();
+            }}
           />
         </View>
       );
@@ -69,62 +73,117 @@ class ResultScreen extends Component {
     );
   }
 
-  getProducts() {
+  getImageResult() {
+    let counter = 0;
+
+    const _getImageResult = () => {
+      counter += 1;
+      return new Promise((resolve, reject) => {
+        let result;
+  
+        setTimeout(() => {
+          axios.get(this.state.analysisUrl, {
+            headers: {
+              Authorization: `CloudSight ${CLOUDSIGHT}`,
+              'Cache-Control': 'no-cache',
+            },
+          })
+            .then((resultData) => {
+              if (counter <= 3) {
+                switch (resultData.data.status) {
+                  case 'completed': {
+                    resolve(resultData);
+                    break;
+                  }
+                  case 'not completed': {
+                    console.log('continue!');
+                    resolve(_getImageResult());
+                    break;
+                  };
+                  default: reject(resultData.data.status);
+                }
+              } else {
+                reject('Cannot get the data from image recognition');
+              }
+            })
+            .catch((imageError) => {
+              console.warn(imageError);
+              reject(imageError);
+            });
+          }, 3000);
+      });
+    };
+
+    _getImageResult()
+      .then(_imageResult => {
+        console.log(_imageResult.data);
+        this.imageResult = _imageResult;
+        this.getProductResult();
+      })
+      .catch(error => {
+        console.warn(error);
+        Alert.alert(
+          'Error happens',
+          'Take a picture once again',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+          ],
+          { cancelable: false },
+        );
+      });
+  }
+
+  getProductResult() {
     const client = amazon.createClient({
       awsId: AMAZON_ACCESS_KEY,
       awsSecret: AMAZON_SECRET_KEY,
       awsTag: AMAZON_ASSOCIATE_ID,
     });
 
-    axios.get(this.state.analysisUrl)
-      .then((imageResult) => {
-        console.log(imageResult);
-
-        client.itemSearch({
-          keywords: imageResult.data.name,
-          itemPage: '1',
-          responseGroup: 'ItemAttributes, Images',
-        })
-          .then((amazonResult) => {
-            console.log(amazonResult);
-            this.setState({
-              products: amazonResult,
-              result: 'success',
-            });
-          })
-          .catch((amazonError) => {
-            console.log(amazonError);
-          })
+    client.itemSearch({
+      keywords: this.imageResult.data.name,
+      itemPage: '1',
+      responseGroup: 'ItemAttributes, Images',
+    })
+      .then((amazonResult) => {
+        console.log(amazonResult);
+        this.setState({
+          products: amazonResult,
+          result: 'success',
+        });
       })
-      .catch((imageError) => {
-        console.error(imageError);
+      .catch((amazonError) => {
+        console.warn('amazonError', amazonError);
         this.setState({ result: 'error' });
       });
-  }
+}
 
   postImageApi() {
-    const sendData = {
-      image: `data:image/png;base64,${this.picture}`,
-      locale: 'en_US',
-    };
-
     axios.post(CLOUDSIGHTSERVER, {
+        image: `data:image/png;base64,${this.picture}`,
+        locale: 'en_US',
+      }, {
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(sendData),
     })
       .then((response) => {
         this.setState({
           analysisUrl: `${CLOUDSIGHTSERVER}/${response.data.token}`,
         });
-        this.getProducts();
+        this.getImageResult();
       })
       .catch((error) => {
-        console.error(error);
-        this.setState({ result: 'error' });
+        console.warn(error);
+        Alert.alert(
+          'Error happens',
+          'Take a picture once again',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+          ],
+          { cancelable: false },
+        );
       });
   }
 
