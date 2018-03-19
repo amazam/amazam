@@ -1,13 +1,21 @@
 import React from 'react';
 import {
+  CameraRoll,
   Text,
   View,
   TouchableOpacity,
+  TouchableHighlight,
   StyleSheet
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import ViewPhotos from './ViewPhotos';
 
 class CameraScreen extends React.Component {
+  state = {
+    showPhotoGallery: false,
+    photoArray: []
+  }
+
   static navigationOptions = {
     title: 'Take a picture of your product',
   };
@@ -22,7 +30,23 @@ class CameraScreen extends React.Component {
     }
   };
 
+  getPhotosFromGallery() {
+    CameraRoll.getPhotos({ first: 100 })
+      .then(res => {
+        // return image paths from res.edges
+        let photoArray = res.edges;
+        this.setState({ showPhotoGallery: true, photoArray: photoArray })
+      })
+  }
+
+
   render() {
+    if (this.state.showPhotoGallery) {
+      return (
+        <ViewPhotos
+          photoArray={this.state.photoArray} />
+      )
+    }
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
@@ -34,7 +58,7 @@ class CameraScreen extends React.Component {
           permissionDialogTitle="Permission to use camera"
           permissionDialogMessage="We need your permission to use your camera phone"
         />
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+        <View style={styles.takepictureButton}>
           <TouchableOpacity
             onPress={this.takePicture}
             style={styles.capture}
@@ -42,6 +66,13 @@ class CameraScreen extends React.Component {
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.cameraRollButton}>
+        <TouchableHighlight
+          onPress={() => this.getPhotosFromGallery()}
+          style={styles.capture}>
+          <Text style={{ fontSize: 14 }}> CameraRoll </Text>
+        </TouchableHighlight>
+      </View>
       </View>
     );  
   }
@@ -52,6 +83,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'black',
+  },
+  takepictureButton: {
+    flex: 0,
+    flexDirection: 'row', 
+    justifyContent: 'center'
+  },
+  cameraRollButton: {
+    flex: 1,
+    flexDirection: 'row', 
+    justifyContent: 'center'
   },
   preview: {
     flex: 1,
