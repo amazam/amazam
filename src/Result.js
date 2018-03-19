@@ -22,6 +22,10 @@ const amazon = require('../util/amazon-product-api');
 const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 class ResultScreen extends Component {
+  static navigationOptions = {
+    title: 'Which do you want to buy?',
+  };
+
   constructor(props) {
     super(props);
 
@@ -94,7 +98,7 @@ class ResultScreen extends Component {
       })
       .catch((imageError) => {
         console.error(imageError);
-        this.setState({ result: false });
+        this.setState({ result: 'error' });
       });
   }
 
@@ -120,7 +124,7 @@ class ResultScreen extends Component {
       })
       .catch((error) => {
         console.error(error);
-        this.setState({ result: false });
+        this.setState({ result: 'error' });
       });
   }
 
