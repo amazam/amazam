@@ -49,10 +49,10 @@ class ResultScreen extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Button
-            title="Retry to get the product pages."
+            title="Retry to get the product pages"
             onPress={() => {
               this.setState({ result: 'processing' });
-              this.getImageResult();
+              this.getProductResult();
             }}
           />
         </View>
@@ -112,7 +112,7 @@ class ResultScreen extends Component {
         });
       })
       .catch((amazonError) => {
-        console.log(amazonError);
+        console.log('aaaaaaaaa', amazonError);
         this.setState({ result: 'error' });
       });
 }
