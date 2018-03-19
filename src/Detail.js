@@ -3,10 +3,16 @@ import {
   Text,
   View,
   Button,
+  ActivityIndicator
 } from 'react-native';
 import { CLOUDSIGHT } from 'react-native-dotenv';
+import axios from 'axios';
 
-export default class Detail extends Component {
+// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
+const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+
+class DetailScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -22,36 +28,35 @@ export default class Detail extends Component {
       locale: 'en_US',
     };
 
-    const postImageResponse = await (await fetch('https://api.cloudsight.ai/v1/images', {
-      method: 'POST',
+    axios.post(CLOUDSIGHTSERVER, {
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(sendData),
-    })).json();
-
-    this.getAnalysisUrl = `https://api.cloudsight.ai/v1/images/${postImageResponse.token}`;
-    this.setState({ postImageStatus: postImageResponse.status });
+    })
+      .then((response) => {
+        this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${response.data.token}`;
+        this.setState({ postImageStatus: response.status });
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-        <Text>response: {this.state.postImageStatus}</Text>
+        {/* <Text>{this.state.postImageStatus}</Text> */}
+        <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
         <Button
           title="Go to get the analysis"
           onPress={() => setTimeout(() => this.props.navigation.navigate('Result', {
             url: this.getAnalysisUrl,
-          }), 5000)}
-        />
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
+          }), 1)}
         />
       </View>
     );
   }
 }
+
+export default DetailScreen;

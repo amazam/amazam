@@ -1,44 +1,65 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  Button,
+  ScrollView,
 } from 'react-native';
-import { CLOUDSIGHT } from 'react-native-dotenv';
+import axios from 'axios';
+import ResultDetail from './ResultDetail';
+import { AMAZON_ACCESS_KEY, AMAZON_ASSOCIATE_ID, AMAZON_SECRET_KEY } from 'react-native-dotenv';
 
-export default class Result extends Component {
+const amazon = require('../util/amazon-product-api');
+
+class ResultScreen extends Component {
   constructor(props) {
     super(props);
 
     const { params } = this.props.navigation.state;
     this.getAnalysisUrl = params ? params.url : 'Failure';
 
-    this.state = { result: null };
+    this.state = { products: [] };
   }
 
   async componentDidMount() {
-    const analysisResult = await (await fetch(this.getAnalysisUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `CloudSight ${CLOUDSIGHT}`,
-        'Cache-Control': 'no-cache',
-      },
-    })).json();
-    console.log(analysisResult);
-    
-    this.setState({ result: analysisResult.name });
+    const client = amazon.createClient({
+      awsId: AMAZON_ACCESS_KEY,
+      awsSecret: AMAZON_SECRET_KEY,
+      awsTag: AMAZON_ASSOCIATE_ID,
+    });
+
+    axios.get(this.getAnalysisUrl)
+      .then((imageResult) => {
+        console.log(imageResult);
+
+        client.itemSearch({
+          keywords: imageResult.data.name,
+          itemPage: '1',
+          responseGroup: 'ItemAttributes, Images',
+        })
+          .then((amazonResult) => {
+            this.setState({ products: amazonResult });
+            console.log(amazonResult);
+          })
+          .catch((amazonError) => {
+            console.log(amazonError);
+          });
+      })
+      .catch(imageError => console.log(imageError));
+  }
+
+  renderProducts() {
+    return this.state.products.map(product =>
+      <ResultDetail key={product.ASIN} product={product} />);
   }
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-        <Text>response: {this.state.result}</Text>
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
-        />
+      <View style={{ flex: 1 }}>
+        <ScrollView>
+          {this.renderProducts()}
+        </ScrollView>
       </View>
     );
   }
 }
+
+export default ResultScreen;
