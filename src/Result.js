@@ -18,9 +18,9 @@ import ResultDetail from './ResultDetail';
 
 const amazon = require('../util/amazon-product-api');
 
-// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
-const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 class ResultScreen extends Component {
   static navigationOptions = {
@@ -74,21 +74,58 @@ class ResultScreen extends Component {
   }
 
   getImageResult() {
-    axios.get(this.state.analysisUrl)
-      .then((_imageResult) => {
+    let counter = 0;
+
+    const _getImageResult = () => {
+      counter += 1;
+      return new Promise((resolve, reject) => {
+        let result;
+  
+        setTimeout(() => {
+          axios.get(this.state.analysisUrl, {
+            headers: {
+              Authorization: `CloudSight ${CLOUDSIGHT}`,
+              'Cache-Control': 'no-cache',
+            },
+          })
+            .then((resultData) => {
+              if (counter < 3) {
+                switch (resultData.data.status) {
+                  case 'completed': {
+                    resolve(resultData);
+                    break;
+                  }
+                  case 'not completed': {
+                    console.log('continue!');
+                    resolve(_getImageResult());
+                    break;
+                  };
+                  default: reject(resultData.data.status);
+                }
+              } else {
+                throw reject('Cannot get the data from image recognition');
+              }
+            })
+            .catch((imageError) => {
+              console.warn(imageError);
+              Alert.alert(
+                'Error happens',
+                'Take a picture once again',
+                [
+                  {text: 'OK', onPress: () => this.props.navigation.goBack()}
+                ],
+                { cancelable: false },
+              );
+            });
+          }, 3000);
+      });
+    };
+
+    _getImageResult()
+      .then(_imageResult => {
         console.log(_imageResult);
         this.imageResult = _imageResult;
         this.getProductResult();
-      })
-      .catch((imageError) => {
-        Alert.alert(
-          'Error happens',
-          'Take a picture once again',
-          [
-            {text: 'OK', onPress: () => this.props.navigation.goBack()}
-          ],
-          { cancelable: false },
-        );
       });
   }
 
@@ -112,24 +149,20 @@ class ResultScreen extends Component {
         });
       })
       .catch((amazonError) => {
-        console.log('aaaaaaaaa', amazonError);
+        console.warn('aaaaaaaaa', amazonError);
         this.setState({ result: 'error' });
       });
 }
 
   postImageApi() {
-    const sendData = {
-      image: `data:image/png;base64,${this.picture}`,
-      locale: 'en_US',
-    };
-
     axios.post(CLOUDSIGHTSERVER, {
+        image: `data:image/png;base64,${this.picture}`,
+        locale: 'en_US',
+      }, {
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(sendData),
     })
       .then((response) => {
         this.setState({
@@ -138,6 +171,7 @@ class ResultScreen extends Component {
         this.getImageResult();
       })
       .catch((error) => {
+        console.warn(error);
         Alert.alert(
           'Error happens',
           'Take a picture once again',
