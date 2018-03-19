@@ -40,7 +40,7 @@ class DetailScreen extends Component {
         this.getAnalysisUrl = `${CLOUDSIGHTSERVER}/${response.data.token}`;
         this.setState({ postImageStatus: response.status });
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   }
 
   render() {
