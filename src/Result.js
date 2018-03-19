@@ -50,7 +50,10 @@ class ResultScreen extends Component {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Button
             title="Retry to get the product pages."
-            onPress={() => this.getImageResult()}
+            onPress={() => {
+              this.setState({ result: 'processing' });
+              this.getImageResult();
+            }}
           />
         </View>
       );
