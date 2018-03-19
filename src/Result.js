@@ -89,7 +89,7 @@ class ResultScreen extends Component {
             },
           })
             .then((resultData) => {
-              if (counter < 3) {
+              if (counter <= 3) {
                 switch (resultData.data.status) {
                   case 'completed': {
                     resolve(resultData);
@@ -103,19 +103,12 @@ class ResultScreen extends Component {
                   default: reject(resultData.data.status);
                 }
               } else {
-                throw reject('Cannot get the data from image recognition');
+                reject('Cannot get the data from image recognition');
               }
             })
             .catch((imageError) => {
               console.warn(imageError);
-              Alert.alert(
-                'Error happens',
-                'Take a picture once again',
-                [
-                  {text: 'OK', onPress: () => this.props.navigation.goBack()}
-                ],
-                { cancelable: false },
-              );
+              reject(imageError);
             });
           }, 3000);
       });
@@ -126,6 +119,17 @@ class ResultScreen extends Component {
         console.log(_imageResult);
         this.imageResult = _imageResult;
         this.getProductResult();
+      })
+      .catch(error => {
+        console.warn(error);
+        Alert.alert(
+          'Error happens',
+          'Take a picture once again',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+          ],
+          { cancelable: false },
+        );
       });
   }
 
