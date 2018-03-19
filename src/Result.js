@@ -73,9 +73,9 @@ class ResultScreen extends Component {
   getImageResult() {
     axios.get(this.state.analysisUrl)
       .then((_imageResult) => {
-        console.log(imageResult);
+        console.log(_imageResult);
         this.imageResult = _imageResult;
-        getProductResult();
+        this.getProductResult();
       })
       .catch((imageError) => {
         Alert.alert(
