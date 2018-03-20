@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import ViewPhotos from './ViewPhotos';
 
 const styles = StyleSheet.create({
   container: {
@@ -47,25 +46,26 @@ class CameraScreen extends React.Component {
     title: 'Take a picture of your product',
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showPhotoGallery: false,
-      photoArray: [],
-    };
+  getPhotosFromGallery = () => {
+    CameraRoll.getPhotos({ first: 100 })
+      .then((res) => {
+        // return image paths from res.edges
+        const photoArray = res.edges;
+        this.props.navigation.navigate('CameraRoll', { photos: photoArray });
+      });
   }
 
-  get currentView() {
-    if (this.state.showPhotoGallery) {
-      return (
-        <ViewPhotos
-          photoArray={this.state.photoArray}
-          navigation={this.props.navigation}
-        />
-      );
+  takePicture = async () => {
+    if (this.camera) {
+      const options = { quality: 0.6, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      this.props.navigation.navigate('Result', {
+        picture: data.base64,
+      });
     }
+  };
 
+  render() {
     return (
       <View style={styles.container}>
         <RNCamera
@@ -101,33 +101,6 @@ class CameraScreen extends React.Component {
       </View>
     );
   }
-
-  getPhotosFromGallery = () => {
-    CameraRoll.getPhotos({ first: 100 })
-      .then((res) => {
-        // return image paths from res.edges
-        const photoArray = res.edges;
-        this.setState({ showPhotoGallery: true, photoArray });
-      });
-  }
-
-  takePicture = async () => {
-    if (this.camera) {
-      const options = { quality: 0.6, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      this.props.navigation.navigate('Result', {
-        picture: data.base64,
-      });
-    }
-  };
-
-  render() {
-    return this.currentView;
-  }
 }
-
-CameraScreen.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
-};
 
 export default CameraScreen;
