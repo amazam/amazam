@@ -76,7 +76,7 @@ class ResultScreen extends Component {
   getImageResult() {
     let counter = 0;
 
-    const getResultFromApi = () => {
+    const getResultFromApi = (timeout) => {
       counter += 1;
 
       return new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ class ResultScreen extends Component {
                   break;
                 }
                 case 'not completed': {
-                  resolve(getResultFromApi());
+                  resolve(getResultFromApi(1200));
                   break;
                 }
                 default: reject(resultData.data.status);
@@ -108,13 +108,12 @@ class ResultScreen extends Component {
               console.warn(imageError);
               reject(imageError);
             });
-        }, 3000);
+        }, timeout);
       });
     };
 
-    getResultFromApi()
+    getResultFromApi(3000)
       .then((resultFromApi) => {
-        console.warn(resultFromApi);
         this.imageResult = resultFromApi;
         this.getProductResult();
       })

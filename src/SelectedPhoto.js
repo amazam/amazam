@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    resizeMode: 'contain',
   },
   sendPictureToAnalyze: {
     flex: 0,
