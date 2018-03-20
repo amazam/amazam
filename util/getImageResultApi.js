@@ -3,7 +3,7 @@ import { CLOUDSIGHT } from 'react-native-dotenv';
 
 let counter = 0;
 
-const getResultFromApi = (analysisUrl) => {
+const getResultFromApi = (analysisUrl, timeout) => {
   counter += 1;
 
   return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ const getResultFromApi = (analysisUrl) => {
               break;
             }
             case 'not completed': {
-              resolve(getResultFromApi());
+              resolve(getResultFromApi(analysisUrl, 1200));
               break;
             }
             default: reject(new Error(resultData.data.status));
@@ -34,7 +34,7 @@ const getResultFromApi = (analysisUrl) => {
         .catch((imageError) => {
           reject(imageError);
         });
-    }, 3000);
+    }, timeout);
   });
 };
 

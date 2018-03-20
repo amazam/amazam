@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
 });
 
 export default class ViewPhotos extends Component {
+  static navigationOptions = {
+    title: 'Select one photo',
+    headerStyle: { backgroundColor: 'black' },
+    headerTintColor: 'white',
+    headerTitleStyle: { color: 'white' },
+  };
+
   constructor(props) {
     super(props);
 
@@ -61,9 +68,6 @@ export default class ViewPhotos extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ alignItems: 'center', marginTop: 15 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600' }}>Pick a Photo </Text>
-        </View>
         <ListView
           contentContainerStyle={styles.list}
           dataSource={this.state.data.cloneWithRows(this.state.photos)}

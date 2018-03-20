@@ -15,7 +15,10 @@ import getProductAmazon from '../util/getProductAmazon';
 
 export default class ResultScreen extends Component {
   static navigationOptions = {
-    title: 'Which do you want to buy?',
+    title: 'Results',
+    headerStyle: { backgroundColor: 'black' },
+    headerTintColor: 'white',
+    headerTitleStyle: { color: 'white' },
   };
 
   constructor(props) {
@@ -81,7 +84,7 @@ export default class ResultScreen extends Component {
 
   callGetImageResultApi = async () => {
     try {
-      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl);
+      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 3000);
       this.callGetProduct();
     } catch (error) {
       console.warn(error);
