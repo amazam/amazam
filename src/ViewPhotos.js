@@ -36,14 +36,13 @@ class ViewPhotos extends Component {
   }
 
   render() {
-    const { showSelectedPhoto, uri } = this.state;
-
-    if (showSelectedPhoto) {
+    if (this.state.showSelectedPhoto) {
       return (
         <SelectedPhoto
-          uri={uri}
-          navigation={this.props.navigation} />
-      )
+          uri={this.state.uri}
+          navigation={this.props.navigation}
+        />
+      );
     }
     return (
       <View style={{ flex: 1 }}>

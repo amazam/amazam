@@ -5,82 +5,10 @@ import {
   View,
   TouchableOpacity,
   TouchableHighlight,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import ViewPhotos from './ViewPhotos';
-
-class CameraScreen extends React.Component {
-  state = {
-    showPhotoGallery: false,
-    photoArray: []
-  }
-
-  static navigationOptions = {
-    title: 'Take a picture of your product',
-  };
-  
-  takePicture = async () => {
-    if (this.camera) {
-      const options = { quality: 0.6, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      console.log("camera.js data await shows: ", data);
-      this.props.navigation.navigate('Detail', {
-        picture: data.base64,
-      });
-    }
-  };
-
-  getPhotosFromGallery() {
-    CameraRoll.getPhotos({ first: 100 })
-      .then(res => {
-        // return image paths from res.edges
-        let photoArray = res.edges;
-        this.setState({ showPhotoGallery: true, photoArray: photoArray })
-      })
-  }
-
-
-  render() {
-    if (this.state.showPhotoGallery) {
-      return (
-        <ViewPhotos
-          photoArray={this.state.photoArray}
-          navigation={this.props.navigation} />
-      )
-    }
-    const { navigate } = this.props.navigation;
-    return (
-      <View style={styles.container}>
-        <RNCamera
-          ref={(ref) => { this.camera = ref; }}
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.auto}
-          permissionDialogTitle="Permission to use camera"
-          permissionDialogMessage="We need your permission to use your camera phone"
-        />
-        <View style={styles.bottomButtons}>
-        <View style={styles.takepictureButton}>
-          <TouchableOpacity
-            onPress={this.takePicture}
-            style={styles.capture}
-          >
-            <Text style={{ fontSize: 14 }}> SNAP </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.cameraRollButton}>
-        <TouchableHighlight
-          onPress={() => this.getPhotosFromGallery()}
-          style={styles.capture}>
-          <Text style={{ fontSize: 14 }}> CameraRoll </Text>
-        </TouchableHighlight>
-        </View>
-        </View>
-      </View>
-    );  
-  }
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -90,17 +18,16 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     flex: 0,
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'center',
   },
   takepictureButton: {
     flex: 0,
-    flexDirection: 'row', 
-    
+    flexDirection: 'row',
   },
   cameraRollButton: {
     flex: 0,
-    flexDirection: 'row', 
+    flexDirection: 'row',
   },
   preview: {
     flex: 1,
@@ -117,5 +44,83 @@ const styles = StyleSheet.create({
     margin: 20,
   },
 });
+
+class CameraScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Take a picture of your product',
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showPhotoGallery: false,
+      photoArray: [],
+    };
+  }
+
+  getPhotosFromGallery = () => {
+    CameraRoll.getPhotos({ first: 100 })
+      .then((res) => {
+        // return image paths from res.edges
+        const photoArray = res.edges;
+        this.setState({ showPhotoGallery: true, photoArray });
+      });
+  }
+
+  takePicture = async () => {
+    if (this.camera) {
+      const options = { quality: 0.6, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      this.props.navigation.navigate('Result', {
+        picture: data.base64,
+      });
+    }
+  };
+
+  render() {
+    if (this.state.showPhotoGallery) {
+      return (
+        <ViewPhotos
+          photoArray={this.state.photoArray}
+          navigation={this.props.navigation}
+        />
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <RNCamera
+          ref={(ref) => { this.camera = ref; }}
+          style={styles.preview}
+          type={RNCamera.Constants.Type.back}
+          flashMode={RNCamera.Constants.FlashMode.auto}
+          permissionDialogTitle="Permission to use camera"
+          permissionDialogMessage="We need your permission to use your camera phone"
+        />
+        <View style={styles.bottomButtons}>
+          <View style={styles.takepictureButton}>
+            <TouchableOpacity
+              onPress={this.takePicture}
+              style={styles.capture}
+            >
+              <Text style={{ fontSize: 14 }}> SNAP </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.cameraRollButton}>
+            <TouchableHighlight
+              onPress={() => this.getPhotosFromGallery()}
+              style={styles.capture}
+            >
+              <Text style={{ fontSize: 14 }}>
+                CameraRoll
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
 
 export default CameraScreen;
