@@ -68,7 +68,8 @@ export default class ResultScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
-          {this.renderProducts()}
+          {this.state.products.map(product =>
+            <ResultDetail key={product.ASIN} product={product} />)}
         </ScrollView>
       </View>
     );
@@ -99,7 +100,7 @@ export default class ResultScreen extends Component {
                   resolve(getResultFromApi());
                   break;
                 }
-                default: reject(resultData.data.status);
+                default: reject(new Error(resultData.data.status));
                 }
               } else {
                 reject(new Error('Cannot get the data from image recognition'));
@@ -120,14 +121,7 @@ export default class ResultScreen extends Component {
       })
       .catch((error) => {
         console.warn(error);
-        Alert.alert(
-          'Error happens',
-          'Take a picture once again',
-          [
-            { text: 'OK', onPress: () => this.props.navigation.goBack() },
-          ],
-          { cancelable: false },
-        );
+        this.makeModalAlert();
       });
   }
 
@@ -173,20 +167,19 @@ export default class ResultScreen extends Component {
       })
       .catch((error) => {
         console.warn(error);
-        Alert.alert(
-          'Error happens',
-          'Take a picture once again',
-          [
-            { text: 'OK', onPress: () => this.props.navigation.goBack() },
-          ],
-          { cancelable: false },
-        );
+        this.makeModalAlert();
       });
   }
 
-  renderProducts() {
-    return this.state.products.map(product =>
-      <ResultDetail key={product.ASIN} product={product} />);
+  makeModalAlert() {
+    Alert.alert(
+      'Error happens',
+      'Take a picture once again',
+      [
+        { text: 'OK', onPress: () => this.props.navigation.goBack() },
+      ],
+      { cancelable: false },
+    );
   }
 
   render() {
