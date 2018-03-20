@@ -1,13 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-
-const Card = (props) => {
-  return (
-    <View style={styles.containerStyle}>
-      {props.children}
-    </View>
-  );
-};
+import PropTypes from 'prop-types';
 
 const styles = {
   containerStyle: {
@@ -25,5 +18,11 @@ const styles = {
     marginTop: 10,
   },
 };
+
+const Card = ({ children }) => (
+  <View style={styles.containerStyle}>
+    {children}
+  </View>
+);
 
 export default Card;

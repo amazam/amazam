@@ -32,14 +32,13 @@ const SelectedPhoto = ({ uri, navigation }) => {
   const convertImageBase64 = async () => {
     try {
       const convertedData = await RNFetchBlob.fs.readFile(uri, 'base64');
-      console.log('convertedData shows: ', convertedData);
 
       navigation.navigate('Result', {
         picture: convertedData,
       });
+      return;
     } catch (error) {
       console.error('ERROR shows: ', error);
-      return error;
     }
   };
 

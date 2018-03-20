@@ -13,6 +13,7 @@
   "dependencies": {
     "amazon-product-api": "^0.4.4",
     "axios": "^0.18.0",
+    "prop-types": "^15.6.1",
     "react": "^16.3.0-alpha.1",
     "react-native": "0.54.2",
     "react-native-camera": "^1.0.2",

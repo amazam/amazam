@@ -76,11 +76,10 @@ class ResultScreen extends Component {
   getImageResult() {
     let counter = 0;
 
-    const _getImageResult = () => {
+    const getResultFromApi = () => {
       counter += 1;
+
       return new Promise((resolve, reject) => {
-        let result;
-  
         setTimeout(() => {
           axios.get(this.state.analysisUrl, {
             headers: {
@@ -91,16 +90,15 @@ class ResultScreen extends Component {
             .then((resultData) => {
               if (counter <= 3) {
                 switch (resultData.data.status) {
-                  case 'completed': {
-                    resolve(resultData);
-                    break;
-                  }
-                  case 'not completed': {
-                    console.log('continue!');
-                    resolve(_getImageResult());
-                    break;
-                  };
-                  default: reject(resultData.data.status);
+                case 'completed': {
+                  resolve(resultData);
+                  break;
+                }
+                case 'not completed': {
+                  resolve(getResultFromApi());
+                  break;
+                }
+                default: reject(resultData.data.status);
                 }
               } else {
                 reject('Cannot get the data from image recognition');
@@ -110,23 +108,22 @@ class ResultScreen extends Component {
               console.warn(imageError);
               reject(imageError);
             });
-          }, 3000);
+        }, 3000);
       });
     };
 
-    _getImageResult()
-      .then(_imageResult => {
-        console.log(_imageResult.data);
-        this.imageResult = _imageResult;
+    getResultFromApi()
+      .then((resultFromApi) => {
+        this.imageResult = resultFromApi;
         this.getProductResult();
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
         Alert.alert(
           'Error happens',
           'Take a picture once again',
           [
-            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+            { text: 'OK', onPress: () => this.props.navigation.goBack() },
           ],
           { cancelable: false },
         );
@@ -160,9 +157,9 @@ class ResultScreen extends Component {
 
   postImageApi() {
     axios.post(CLOUDSIGHTSERVER, {
-        image: `data:image/png;base64,${this.picture}`,
-        locale: 'en_US',
-      }, {
+      image: `data:image/png;base64,${this.picture}`,
+      locale: 'en_US',
+    }, {
       headers: {
         Authorization: `CloudSight ${CLOUDSIGHT}`,
         'Cache-Control': 'no-cache',
@@ -180,7 +177,7 @@ class ResultScreen extends Component {
           'Error happens',
           'Take a picture once again',
           [
-            {text: 'OK', onPress: () => this.props.navigation.goBack()}
+            { text: 'OK', onPress: () => this.props.navigation.goBack() },
           ],
           { cancelable: false },
         );

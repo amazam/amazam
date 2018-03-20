@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   CameraRoll,
   Text,
@@ -59,26 +60,7 @@ class CameraScreen extends React.Component {
     };
   }
 
-  getPhotosFromGallery = () => {
-    CameraRoll.getPhotos({ first: 100 })
-      .then((res) => {
-        // return image paths from res.edges
-        const photoArray = res.edges;
-        this.setState({ showPhotoGallery: true, photoArray });
-      });
-  }
-
-  takePicture = async () => {
-    if (this.camera) {
-      const options = { quality: 0.6, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      this.props.navigation.navigate('Result', {
-        picture: data.base64,
-      });
-    }
-  };
-
-  render() {
+  get currentView() {
     if (this.state.showPhotoGallery) {
       return (
         <ViewPhotos
@@ -121,6 +103,33 @@ class CameraScreen extends React.Component {
       </View>
     );
   }
+
+  getPhotosFromGallery = () => {
+    CameraRoll.getPhotos({ first: 100 })
+      .then((res) => {
+        // return image paths from res.edges
+        const photoArray = res.edges;
+        this.setState({ showPhotoGallery: true, photoArray });
+      });
+  }
+
+  takePicture = async () => {
+    if (this.camera) {
+      const options = { quality: 0.6, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      this.props.navigation.navigate('Result', {
+        picture: data.base64,
+      });
+    }
+  };
+
+  render() {
+    return this.currentView;
+  }
 }
+
+CameraScreen.propTypes = {
+  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
+};
 
 export default CameraScreen;
