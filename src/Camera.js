@@ -3,7 +3,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
@@ -11,7 +11,7 @@ class CameraScreen extends React.Component {
   static navigationOptions = {
     title: 'Take a picture of your product',
   };
-  
+
   takePicture = async () => {
     if (this.camera) {
       const options = { quality: 0.6, base64: true };
@@ -43,9 +43,9 @@ class CameraScreen extends React.Component {
           </TouchableOpacity>
         </View>
       </View>
-    );  
+    );
   }
-};
+}
 
 const styles = StyleSheet.create({
   container: {
