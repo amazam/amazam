@@ -22,11 +22,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  takepictureButton: {
-    flex: 0,
-    flexDirection: 'row',
-  },
-  cameraRollButton: {
+  defaultButton: {
     flex: 0,
     flexDirection: 'row',
   },
@@ -81,15 +77,17 @@ class CameraScreen extends React.Component {
           permissionDialogMessage="We need your permission to use your camera phone"
         />
         <View style={styles.bottomButtons}>
-          <View style={styles.takepictureButton}>
+          <View style={styles.defaultButton}>
             <TouchableOpacity
               onPress={this.takePicture}
               style={styles.capture}
             >
-              <Text style={{ fontSize: 14 }}> SNAP </Text>
+              <Text style={{ fontSize: 14 }}>
+                SNAP
+              </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.cameraRollButton}>
+          <View style={styles.defaultButton}>
             <TouchableHighlight
               onPress={() => this.getPhotosFromGallery()}
               style={styles.capture}

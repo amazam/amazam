@@ -11,20 +11,31 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
+    backgroundColor: 'black',
   },
-  image: {
-    height: 300,
-    width: 200,
-  },
-  sendPictureToAnalyze: {
+  bottomButtons: {
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: 'red',
-    borderRadius: 15,
-    padding: 20,
+  },
+  defaultButton: {
+    flex: 0,
+    flexDirection: 'row',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  sendPictureToAnalyze: {
+    flex: 0,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 15,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    margin: 20,
   },
 });
 
@@ -48,12 +59,18 @@ const SelectedPhoto = ({ uri, navigation }) => {
         source={{ uri }}
         style={styles.image}
       />
-      <TouchableHighlight
-        onPress={() => convertImageBase64()}
-        style={styles.sendPictureToAnalyze}
-      >
-        <Text style={{ fontSize: 14, color: 'white' }}> Analyze Picture </Text>
-      </TouchableHighlight>
+      <View style={styles.bottomButtons}>
+        <View style={styles.defaultButton}>
+          <TouchableHighlight
+            onPress={() => convertImageBase64()}
+            style={styles.sendPictureToAnalyze}
+          >
+            <Text style={{ fontSize: 14 }}>
+              Analyze Picture
+            </Text>
+          </TouchableHighlight>
+        </View>
+      </View>
     </View>
   );
 };

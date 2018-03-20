@@ -12,25 +12,27 @@ import {
 import SelectedPhoto from './SelectedPhoto';
 
 class ViewPhotos extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       data: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2
+        rowHasChanged: (r1, r2) => r1 !== r2,
       }),
       showSelectedPhoto: false,
-      uri: ''
-    }
+      uri: '',
+    };
   }
 
   renderRow(rowData) {
     const { uri } = rowData.node.image;
     return (
       <TouchableHighlight
-        onPress={() => this.setState({ showSelectedPhoto: true, uri: uri })}>
+        onPress={() => this.setState({ showSelectedPhoto: true, uri })}
+      >
         <Image
           source={{ uri: rowData.node.image.uri }}
-          style={styles.image} />
+          style={styles.image}
+        />
       </TouchableHighlight>
     )
   }
@@ -47,13 +49,14 @@ class ViewPhotos extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ alignItems: 'center', marginTop: 15 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600' }}>Pick a Photo </Text>
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>Pick a Photo</Text>
         </View>
         <ListView
           contentContainerStyle={styles.list}
           dataSource={this.state.data.cloneWithRows(this.props.photoArray)}
-          renderRow={(rowData) => this.renderRow(rowData)}
-          enableEmptySections={true} />
+          renderRow={rowData => this.renderRow(rowData)}
+          enableEmptySections
+        />
       </View>
     );
   }
@@ -62,9 +65,8 @@ class ViewPhotos extends Component {
 const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
-
   image: {
     width: 110,
     height: 120,
@@ -72,8 +74,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#979797'
-  }
-})
+    borderColor: '#979797',
+  },
+});
 
 export default ViewPhotos;

@@ -114,6 +114,7 @@ class ResultScreen extends Component {
 
     getResultFromApi()
       .then((resultFromApi) => {
+        console.warn(resultFromApi);
         this.imageResult = resultFromApi;
         this.getProductResult();
       })
