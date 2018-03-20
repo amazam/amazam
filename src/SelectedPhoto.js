@@ -28,7 +28,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const SelectedPhoto = ({ uri, navigation }) => {
+const SelectedPhoto = ({ navigation }) => {
+  const { params } = navigation.state;
+  const { uri } = params;
+
   const convertImageBase64 = async () => {
     try {
       const convertedData = await RNFetchBlob.fs.readFile(uri, 'base64');
