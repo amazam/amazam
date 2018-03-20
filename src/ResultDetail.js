@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -8,44 +9,6 @@ import {
 import Card from './Card';
 import CardSection from './CardSection';
 import ResultButton from './ResultButton';
-
-const ResultDetail = ({ product }) => {
-  return (
-    <Card>
-      <CardSection>
-        <View style={styles.thumbnailContainerStyle}>
-          <Image
-            style={styles.thumbnailStyle}
-            source={{ uri: product.SmallImage !== undefined ? product.SmallImage[0].URL[0] : 'http://howmadareyou.com/wp-content/themes/MAD/images/default_thumbnail.jpg' }}
-          />
-        </View>
-        <View style={styles.headerContentStyle}>
-          <Text style={styles.headerTextStyle}>
-            {product.ItemAttributes[0].Brand !== undefined ? product.ItemAttributes[0].Brand[0] : 'Product'}
-          </Text>
-          <Text>
-            {product.ItemAttributes[0].Binding !== undefined ? product.ItemAttributes[0].Binding[0] : 'Product Group'}
-          </Text>
-        </View>
-        <View style={styles.priceContentStyle}>
-          <Text style={styles.priceTextStyle}>
-            {product.ItemAttributes[0].ListPrice !== undefined ? product.ItemAttributes[0].ListPrice[0].FormattedPrice : ''}
-          </Text>
-        </View>
-      </CardSection>
-
-      <CardSection>
-        <Text>{JSON.stringify(product.ItemAttributes[0].Title[0])}</Text>
-      </CardSection>
-
-      <CardSection>
-        <ResultButton onPress={() => Linking.openURL(product.DetailPageURL[0])}>
-          Go to Amazon
-        </ResultButton>
-      </CardSection>
-    </Card>
-  );
-};
 
 const styles = {
   headerContentStyle: {
@@ -75,5 +38,41 @@ const styles = {
     marginRight: 10,
   },
 };
+
+const ResultDetail = ({ product }) => (
+  <Card>
+    <CardSection>
+      <View style={styles.thumbnailContainerStyle}>
+        <Image
+          style={styles.thumbnailStyle}
+          source={{ uri: product.SmallImage !== undefined ? product.SmallImage[0].URL[0] : 'http://howmadareyou.com/wp-content/themes/MAD/images/default_thumbnail.jpg' }}
+        />
+      </View>
+      <View style={styles.headerContentStyle}>
+        <Text style={styles.headerTextStyle}>
+          {product.ItemAttributes[0].Brand !== undefined ? product.ItemAttributes[0].Brand[0] : 'Product'}
+        </Text>
+        <Text>
+          {product.ItemAttributes[0].Binding !== undefined ? product.ItemAttributes[0].Binding[0] : 'Product Group'}
+        </Text>
+      </View>
+      <View style={styles.priceContentStyle}>
+        <Text style={styles.priceTextStyle}>
+          {product.ItemAttributes[0].ListPrice !== undefined ? product.ItemAttributes[0].ListPrice[0].FormattedPrice : ''}
+        </Text>
+      </View>
+    </CardSection>
+
+    <CardSection>
+      <Text>{JSON.stringify(product.ItemAttributes[0].Title[0])}</Text>
+    </CardSection>
+
+    <CardSection>
+      <ResultButton onPress={() => Linking.openURL(product.DetailPageURL[0])}>
+        Go to Amazon
+      </ResultButton>
+    </CardSection>
+  </Card>
+);
 
 export default ResultDetail;

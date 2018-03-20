@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {
   Image,
@@ -62,3 +63,26 @@ const SelectedPhoto = ({ navigation }) => {
 };
 
 export default SelectedPhoto;
+
+SelectedPhoto.propTypes = {
+  navigation: PropTypes.shape({
+    addListener: PropTypes.func,
+    dispatch: PropTypes.func,
+    getParam: PropTypes.func,
+    goBack: PropTypes.func,
+    isFocused: PropTypes.func,
+    navigate: PropTypes.func,
+    pop: PropTypes.func,
+    popToTop: PropTypes.func,
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    setParams: PropTypes.func,
+    state: PropTypes.shape({
+      key: PropTypes.string,
+      params: PropTypes.shape({
+        uri: PropTypes.string,
+      }),
+      routeName: PropTypes.string,
+    }),
+  }).isRequired,
+};

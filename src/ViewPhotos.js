@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Image,
   View,
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class ViewPhotos extends Component {
+export default class ViewPhotos extends Component {
   constructor(props) {
     super(props);
 
@@ -34,9 +35,8 @@ class ViewPhotos extends Component {
     this.state = {
       photos: params.photos,
       data: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2
+        rowHasChanged: (r1, r2) => r1 !== r2,
       }),
-      showSelectedPhoto: false,
     };
   }
 
@@ -68,11 +68,42 @@ class ViewPhotos extends Component {
           contentContainerStyle={styles.list}
           dataSource={this.state.data.cloneWithRows(this.state.photos)}
           renderRow={rowData => this.renderRow(rowData)}
-          enableEmptySections={true}
         />
       </View>
     );
   }
 }
 
-export default ViewPhotos;
+ViewPhotos.propTypes = {
+  navigation: PropTypes.shape({
+    addListener: PropTypes.func,
+    dispatch: PropTypes.func,
+    getParam: PropTypes.func,
+    goBack: PropTypes.func,
+    isFocused: PropTypes.func,
+    navigate: PropTypes.func,
+    pop: PropTypes.func,
+    popToTop: PropTypes.func,
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    setParams: PropTypes.func,
+    state: PropTypes.shape({
+      key: PropTypes.string,
+      params: PropTypes.shape({
+        photos: PropTypes.arrayOf(PropTypes.shape({
+          node: PropTypes.shape({
+            group_name: PropTypes.string,
+            image: PropTypes.shape({
+              height: PropTypes.number,
+              uri: PropTypes.string,
+              width: PropTypes.number,
+            }),
+            timestamp: PropTypes.number,
+            type: PropTypes.string,
+          }),
+        })),
+      }),
+      routeName: PropTypes.string,
+    }),
+  }).isRequired,
+};

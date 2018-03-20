@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class CameraScreen extends React.Component {
+export default class CameraScreen extends React.Component {
   static navigationOptions = {
     title: 'Take a picture of your product',
   };
@@ -105,4 +105,22 @@ class CameraScreen extends React.Component {
   }
 }
 
-export default CameraScreen;
+CameraScreen.propTypes = {
+  navigation: PropTypes.shape({
+    addListener: PropTypes.func,
+    dispatch: PropTypes.func,
+    getParam: PropTypes.func,
+    goBack: PropTypes.func,
+    isFocused: PropTypes.func,
+    navigate: PropTypes.func,
+    pop: PropTypes.func,
+    popToTop: PropTypes.func,
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    setParams: PropTypes.func,
+    state: PropTypes.shape({
+      key: PropTypes.string,
+      routeName: PropTypes.string,
+    }),
+  }).isRequired,
+};
