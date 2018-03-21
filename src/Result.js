@@ -2,16 +2,36 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActivityIndicator,
+  StyleSheet,
   Alert,
   Button,
   ScrollView,
   View,
+  Image,
 } from 'react-native';
 
 import ResultDetail from './ResultDetail';
 import postImageApi from '../util/postImageApi';
 import getResultFromApi from '../util/getImageResultApi';
 import getProductAmazon from '../util/getProductAmazon';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    resizeMode: 'contain',
+  },
+  errorAmazon: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default class ResultScreen extends Component {
   static navigationOptions = {
@@ -34,14 +54,14 @@ export default class ResultScreen extends Component {
     };
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     this.callPostImageApi();
   }
 
   get currentView() {
     if (this.state.result === 'error') {
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.errorAmazon}>
           <Button
             title="Retry to get the product pages"
             onPress={() => {
@@ -53,8 +73,12 @@ export default class ResultScreen extends Component {
       );
     } else if (this.state.result === 'processing') {
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.container}>
           <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
+          <Image
+            style={styles.image}
+            source={{ uri: `data:image/jpg;base64,${this.picture}` }}
+          />
         </View>
       );
     }
@@ -84,7 +108,13 @@ export default class ResultScreen extends Component {
 
   callGetImageResultApi = async () => {
     try {
-      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 3000);
+      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 5000);
+      console.log('data.token', this.imageRecognitionResult.data.token);
+      console.log('data.url', this.imageRecognitionResult.data.url);
+      console.log('data.status', this.imageRecognitionResult.data.status);
+      console.log('data.name', this.imageRecognitionResult.data.name);
+      console.log('status', this.imageRecognitionResult.status);
+      console.log('responseURL', this.imageRecognitionResult.request.responseURL);
       this.callGetProduct();
     } catch (error) {
       console.warn(error);
