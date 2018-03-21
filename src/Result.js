@@ -84,7 +84,7 @@ export default class ResultScreen extends Component {
 
   callGetImageResultApi = async () => {
     try {
-      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 3000);
+      this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 5000);
       this.callGetProduct();
     } catch (error) {
       console.warn(error);
