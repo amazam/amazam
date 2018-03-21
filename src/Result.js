@@ -108,10 +108,19 @@ export default class ResultScreen extends Component {
       'Error happens',
       'Take a picture once again',
       [
-        { text: 'OK', onPress: () => this.props.navigation.goBack() },
+        { text: 'OK', onPress: () => this.goBackToCamera() },
       ],
       { cancelable: false },
     );
+  }
+
+  goBackToCamera = () => {
+    this.setState({
+      analysisUrl: null,
+      products: [],
+      result: 'processing',
+    });
+    this.props.navigation.goBack();
   }
 
   render() {

@@ -22,7 +22,7 @@ const getResultFromApi = (analysisUrl, timeout) => {
               break;
             }
             case 'not completed': {
-              resolve(getResultFromApi(analysisUrl, 1200));
+              resolve(getResultFromApi(analysisUrl, 2000));
               break;
             }
             default: reject(new Error(resultData.data.status));
