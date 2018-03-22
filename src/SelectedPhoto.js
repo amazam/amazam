@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {
+  Alert,
   Image,
   View,
   StyleSheet,
@@ -55,6 +56,15 @@ const SelectedPhoto = ({ navigation }) => {
       return;
     } catch (error) {
       console.error('ERROR shows: ', error);
+
+      Alert.alert(
+        'Error happens',
+        'Fail to pick a picture data',
+        [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ],
+        { cancelable: false },
+      );
     }
   };
 

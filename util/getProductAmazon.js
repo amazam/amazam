@@ -6,7 +6,7 @@ import {
 
 import amazon from '../util/amazon-product-api';
 
-const getProductAmazon = async (imageRecognitionResult) => {
+const getProductAmazon = async (keywords) => {
   const client = amazon.createClient({
     awsId: AMAZON_ACCESS_KEY,
     awsSecret: AMAZON_SECRET_KEY,
@@ -15,7 +15,7 @@ const getProductAmazon = async (imageRecognitionResult) => {
 
   try {
     const productList = await client.itemSearch({
-      keywords: imageRecognitionResult.data.name,
+      keywords,
       itemPage: '1',
       responseGroup: 'ItemAttributes, Images',
     });

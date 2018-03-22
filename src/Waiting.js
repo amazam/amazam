@@ -51,8 +51,7 @@ export default class WaitingScreen extends Component {
     this.retryCounter = 0;
     this.GOHOMEMESSAGE = 'Take a picture once again';
     this.analysisResult = null;
-    this.searchKeywords = null;
-    this.products = [];
+    this.products = null;
 
     this.state = {
       result: 'processing',
@@ -104,17 +103,15 @@ export default class WaitingScreen extends Component {
   }
 
   getSearchText = (someWords) => {
-    this.searchKeywords = someWords;
-    console.log(this.searchKeywords);
-    this.callGetProduct();
+    this.callGetProduct(someWords);
     this.setState({ result: 'processing' });
   }
 
-  callGetProduct = async () => {
+  callGetProduct = async (searchKeywords) => {
     try {
       this.setState({ status: 'getting the data from amazon' });
-      this.products = await getProductAmazon(this.searchKeywords);
-
+      this.products = await getProductAmazon(searchKeywords);
+      
       this.setState({ result: 'success' });
     } catch (error) {
       console.warn('amazonError', error);
