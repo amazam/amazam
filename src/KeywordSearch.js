@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Text,
   Button,
   View,
   StyleSheet,
@@ -65,6 +64,7 @@ export default class KeywordSearch extends Component {
       return;
     }
     newWordList[index].mode = true;
+
     this.setState({ wordCheckList: newWordList });
   }
 
@@ -89,18 +89,18 @@ export default class KeywordSearch extends Component {
           onCancelButtonPress={() => console.log('on cancel button')}
         />
 
-        {/* <View style={styles.imageAPIWordButton}>
+        <View style={styles.imageAPIWordButton}>
           {this.state.wordCheckList.map((eachPair, index) => (
             <Button
-              onPress={this.onButtonPress(index)}
+              onPress={() => this.onButtonPress(index)}
               title={eachPair.word}
             />
           ))}
-        </View> */}
+        </View>
 
         <View style={styles.submitButton}>
           <Button
-            onPress={this.onSubmitButtonPress}
+            onPress={() => this.onSubmitButtonPress()}
             title="Submit"
           />
         </View>
