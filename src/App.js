@@ -3,7 +3,6 @@ import { StackNavigator } from 'react-navigation';
 import CameraScreen from './Camera';
 import ViewPhotos from './ViewPhotos';
 import SelectedPhoto from './SelectedPhoto';
-import KeywordSearch from './KeywordSearch';
 import WaitingScreen from './Waiting';
 
 const RootStack = StackNavigator(
