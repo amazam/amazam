@@ -86,20 +86,22 @@ export default class ResultScreen extends Component {
     } catch (error) {
       console.warn('amazonError', error);
 
-      if (error.Error.Message === 'We did not find any matches for your request.') {
-        // Go to keyword search
+      if (this.retryCounter >= 2) {
+        this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
         return;
       }
-      if (this.retryCounter < 2) {
-        this.setState({ result: 'error' });
+      if (error.message === 'We did not find any matches for your request.') {
+        // Go to keyword search component
+        return;
       }
-      this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
+      this.retryCounter += 1;
+      this.setState({ result: 'error' });
     }
   }
 
   callGetImageResultApi = async () => {
     try {
-      this.setState({ status: 'analizing your image' });
+      this.setState({ status: 'analyzing your image' });
       this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 3000);
       this.callGetProduct();
     } catch (error) {
