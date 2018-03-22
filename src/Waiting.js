@@ -121,7 +121,7 @@ export default class WaitingScreen extends Component {
         return;
       }
       if (error.message === 'We did not find any matches for your request.') {
-        // Go to keyword search component
+        this.setState({ result: 'finish analysis' });
         return;
       }
       this.retryCounter += 1;
@@ -134,12 +134,6 @@ export default class WaitingScreen extends Component {
       this.setState({ status: 'analyzing your image' });
 
       this.analysisResult = await getResultFromApi(url, 5000);
-      console.log('data.token', this.analysisResult.data.token);
-      console.log('data.url', this.analysisResult.data.url);
-      console.log('data.status', this.analysisResult.data.status);
-      console.log('data.name', this.analysisResult.data.name);
-      console.log('status', this.analysisResult.status);
-      console.log('responseURL', this.analysisResult.request.responseURL);
 
       this.setState({ result: 'finish analysis' });
     } catch (error) {
