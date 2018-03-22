@@ -6,6 +6,7 @@ import {
   Alert,
   Button,
   ScrollView,
+  Text,
   View,
   Image,
 } from 'react-native';
@@ -47,10 +48,14 @@ export default class ResultScreen extends Component {
     const { params } = this.props.navigation.state;
     this.picture = params ? params.picture : 'Failure';
 
+    this.retryCounter = 0;
+    this.GOHOMEMESSAGE = 'Take a picture once again';
+
     this.state = {
       analysisUrl: null,
       products: [],
       result: 'processing',
+      status: 'null',
     };
   }
 
@@ -75,6 +80,7 @@ export default class ResultScreen extends Component {
       return (
         <View style={styles.container}>
           <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
+          <Text>{this.state.status}</Text>
           <Image
             style={styles.image}
             source={{ uri: `data:image/jpg;base64,${this.picture}` }}
@@ -94,6 +100,7 @@ export default class ResultScreen extends Component {
 
   callGetProduct = async () => {
     try {
+      this.setState({ status: 'getting the data from amazon' });
       const productResult = await getProductAmazon(this.imageRecognitionResult);
 
       this.setState({
@@ -102,12 +109,23 @@ export default class ResultScreen extends Component {
       });
     } catch (error) {
       console.warn('amazonError', error);
+
+      if (this.retryCounter >= 2) {
+        this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
+        return;
+      }
+      if (error.message === 'We did not find any matches for your request.') {
+        // Go to keyword search component
+        return;
+      }
+      this.retryCounter += 1;
       this.setState({ result: 'error' });
     }
   }
 
   callGetImageResultApi = async () => {
     try {
+      this.setState({ status: 'analyzing your image' });
       this.imageRecognitionResult = await getResultFromApi(this.state.analysisUrl, 5000);
       console.log('data.token', this.imageRecognitionResult.data.token);
       console.log('data.url', this.imageRecognitionResult.data.url);
@@ -118,27 +136,28 @@ export default class ResultScreen extends Component {
       this.callGetProduct();
     } catch (error) {
       console.warn(error);
-      this.makeModalAlert();
+      this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
     }
   }
 
   callPostImageApi = async () => {
     try {
+      this.setState({ status: 'registering your image' });
       const analysisUrl = await postImageApi(this.picture);
       this.setState({ analysisUrl });
       this.callGetImageResultApi();
     } catch (error) {
       console.warn(error);
-      this.makeModalAlert();
+      this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
     }
   }
 
-  makeModalAlert = () => {
+  makeModalAlert = (message, func) => {
     Alert.alert(
       'Error happens',
-      'Take a picture once again',
+      message,
       [
-        { text: 'OK', onPress: () => this.goBackToCamera() },
+        { text: 'OK', onPress: () => func() },
       ],
       { cancelable: false },
     );
