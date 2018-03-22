@@ -11,9 +11,8 @@ export default class ResultScreen extends Component {
   constructor(props) {
     super(props);
 
-    const { params } = this.props.navigation.state;
     this.state = {
-      products: params ? params.productions : [],
+      products: this.props.products ? this.props.products.productions : [],
     };
   }
 

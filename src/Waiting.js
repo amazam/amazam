@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Alert,
   Button,
-  ScrollView,
   Text,
   View,
   Image,
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class ResultScreen extends Component {
+export default class WaitingScreen extends Component {
   static navigationOptions = {
     title: 'Results',
     headerStyle: { backgroundColor: 'black' },
@@ -51,8 +50,8 @@ export default class ResultScreen extends Component {
 
     this.retryCounter = 0;
     this.GOHOMEMESSAGE = 'Take a picture once again';
-    this.analysisUrl = null;
     this.analysisResult = null;
+    this.searchKeywords = null;
     this.products = [];
 
     this.state = {
@@ -93,6 +92,7 @@ export default class ResultScreen extends Component {
       return (
         <Keyword
           imageRecognitionResult={this.analysisResult}
+          getSearchText={this.getSearchText}
         />
       );
     }
@@ -103,10 +103,17 @@ export default class ResultScreen extends Component {
     );
   }
 
+  getSearchText = (someWords) => {
+    this.searchKeywords = someWords;
+    console.log(this.searchKeywords);
+    this.callGetProduct();
+    this.setState({ result: 'processing' });
+  }
+
   callGetProduct = async () => {
     try {
       this.setState({ status: 'getting the data from amazon' });
-      const productResult = await getProductAmazon(this.imageRecognitionResult);
+      this.products = await getProductAmazon(this.searchKeywords);
 
       this.setState({ result: 'success' });
     } catch (error) {
@@ -125,17 +132,19 @@ export default class ResultScreen extends Component {
     }
   }
 
-  callGetImageResultApi = async () => {
+  callGetImageResultApi = async (url) => {
     try {
       this.setState({ status: 'analyzing your image' });
-      this.imageRecognitionResult = await getResultFromApi(this.analysisUrl, 5000);
-      console.log('data.token', this.imageRecognitionResult.data.token);
-      console.log('data.url', this.imageRecognitionResult.data.url);
-      console.log('data.status', this.imageRecognitionResult.data.status);
-      console.log('data.name', this.imageRecognitionResult.data.name);
-      console.log('status', this.imageRecognitionResult.status);
-      console.log('responseURL', this.imageRecognitionResult.request.responseURL);
-      this.callGetProduct();
+
+      this.analysisResult = await getResultFromApi(url, 5000);
+      console.log('data.token', this.analysisResult.data.token);
+      console.log('data.url', this.analysisResult.data.url);
+      console.log('data.status', this.analysisResult.data.status);
+      console.log('data.name', this.analysisResult.data.name);
+      console.log('status', this.analysisResult.status);
+      console.log('responseURL', this.analysisResult.request.responseURL);
+
+      this.setState({ result: 'finish analysis' });
     } catch (error) {
       console.warn(error);
       this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
@@ -146,8 +155,7 @@ export default class ResultScreen extends Component {
     try {
       this.setState({ status: 'registering your image' });
       const analysisUrl = await postImageApi(this.picture);
-      this.setState({ analysisUrl });
-      this.callGetImageResultApi();
+      this.callGetImageResultApi(analysisUrl);
     } catch (error) {
       console.warn(error);
       this.makeModalAlert(this.GOHOMEMESSAGE, this.goBackToCamera);
@@ -166,19 +174,17 @@ export default class ResultScreen extends Component {
   }
 
   goBackToCamera = () => {
-    this.setState({
-      analysisUrl: null,
-      result: 'processing',
-    });
+    this.setState({ result: 'processing' });
     this.props.navigation.goBack();
   }
+
 
   render() {
     return this.currentView;
   }
 }
 
-ResultScreen.propTypes = {
+WaitingScreen.propTypes = {
   navigation: PropTypes.shape({
     addListener: PropTypes.func,
     dispatch: PropTypes.func,

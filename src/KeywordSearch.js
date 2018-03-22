@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   Text,
   Button,
@@ -31,26 +31,52 @@ const styles = StyleSheet.create({
 });
 
 export default class KeywordSearch extends Component {
-  static navigationOptions = {
-    title: 'Keyword Search',
-    headerStyle: { backgroundColor: 'black' },
-    headerTintColor: 'white',
-    headerTitleStyle: { color: 'white' },
-  };
+  // static navigationOptions = {
+  //   title: 'Keyword Search',
+  //   headerStyle: { backgroundColor: 'black' },
+  //   headerTintColor: 'white',
+  //   headerTitleStyle: { color: 'white' },
+  // };
 
   constructor(props) {
     super(props);
 
-    const { params } = this.props.navigation.state;
+    const { imageRecognitionResult } = this.props;
+    const recognitionWords = imageRecognitionResult.data.name;
+    const splittedArray = recognitionWords.split(' ');
+    const wordListWithBoolean = splittedArray.map(eachword => ({
+      word: eachword,
+      mode: true,
+    }));
 
     this.state = {
       search: '',
-      wordCheckList: [],
+      wordCheckList: wordListWithBoolean,
     };
   }
 
-  onButtonPress = () => {
+  onButtonPress = (index) => {
     // toggle true/false
+    const newWordList = [...this.state.wordCheckList];
+
+    if (newWordList[index].mode) {
+      newWordList[index].mode = false;
+      this.setState({ wordCheckList: newWordList });
+      return;
+    }
+    newWordList[index].mode = true;
+    this.setState({ wordCheckList: newWordList });
+  }
+
+  onSubmitButtonPress = () => {
+    let combinedWords = '';
+
+    this.state.wordCheckList.forEach((eachPair) => {
+      combinedWords += `${eachPair.word} `;
+    });
+    combinedWords += this.state.search;
+
+    this.props.getSearchText(combinedWords);
   }
 
   render() {
@@ -58,27 +84,23 @@ export default class KeywordSearch extends Component {
       <View style={styles.container}>
         <Search
           ref="search_box"
-          onChangeText={search => this.setState({ search })}
-          onSearchButtonPress={() => console.log("on search button")}
-          onCancelButtonPress={() => console.log("on cancel button")}
+          onChangeText={() => console.log('on change text')}
+          onSearchButtonPress={() => console.log('on search button')}
+          onCancelButtonPress={() => console.log('on cancel button')}
         />
 
-        <View style={styles.imageAPIWordButton}>
-          <Button
-            onPress={this.onButtonPress}
-            title="Android"
-          />
-
-          <Button
-            onPress={this.onButtonPress}
-            title="phone"
-          />
-
-        </View>
+        {/* <View style={styles.imageAPIWordButton}>
+          {this.state.wordCheckList.map((eachPair, index) => (
+            <Button
+              onPress={this.onButtonPress(index)}
+              title={eachPair.word}
+            />
+          ))}
+        </View> */}
 
         <View style={styles.submitButton}>
           <Button
-            onPress={this.onButtonPress}
+            onPress={this.onSubmitButtonPress}
             title="Submit"
           />
         </View>
@@ -87,3 +109,8 @@ export default class KeywordSearch extends Component {
     );
   }
 }
+
+KeywordSearch.propTypes = {
+  getSearchText: PropTypes.func.isRequired,
+  imageRecognitionResult: PropTypes.string.isRequired,
+};
