@@ -50,7 +50,7 @@ const SelectedPhoto = ({ navigation }) => {
     try {
       const convertedData = await RNFetchBlob.fs.readFile(uri, 'base64');
 
-      navigation.navigate('Result', {
+      navigation.navigate('Waiting', {
         picture: convertedData,
       });
       return;

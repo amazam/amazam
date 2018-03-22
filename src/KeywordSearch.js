@@ -14,19 +14,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
   },
+  textinput: {
+    flex: 0,
+    flexDirection: 'column',
+    // justifyContent: 'space-evenly',
+  },
+  imageAPIWordButton: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  outputString: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
   submitButton: {
     flex: 0,
     flexDirection: 'column',
     justifyContent: 'center',
     height: 100,
-    width: 300,
-  },
-  imageAPIWordButton: {
-    flex: 0,
-    flexDirection: 'column',
-    justifyContent: 'space-evenly',
-    height: 100,
-    width: 200,
   },
 });
 
@@ -78,6 +84,7 @@ export default class KeywordSearch extends Component {
     return (
       <View style={styles.container}>
         <TextInput
+          style={styles.textinput}
           placeholder="Add some words to search if you want"
           onChangeText={text => this.setState({ search: text })}
         />
@@ -92,7 +99,7 @@ export default class KeywordSearch extends Component {
           ))}
         </View>
 
-        <Text>
+        <Text style={styles.imageAPIWordButton}>
           {`${this.state.wordCheckList.filter(eachPair =>
             eachPair.mode).map(eachPair =>
             eachPair.word).join(' ')} ${this.state.search}`}
@@ -100,6 +107,7 @@ export default class KeywordSearch extends Component {
 
         <View style={styles.submitButton}>
           <Button
+            color="green"
             onPress={() => this.onSubmitButtonPress()}
             title="Submit"
           />
