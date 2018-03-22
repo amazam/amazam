@@ -4,6 +4,7 @@ import CameraScreen from './Camera';
 import ResultScreen from './Result';
 import ViewPhotos from './ViewPhotos';
 import SelectedPhoto from './SelectedPhoto';
+import KeywordSearch from './KeywordSearch';
 
 const RootStack = StackNavigator(
   {
@@ -18,6 +19,9 @@ const RootStack = StackNavigator(
     },
     SelectedPhoto: {
       screen: SelectedPhoto,
+    },
+    KeywordSearch: {
+      screen: KeywordSearch,
     },
   },
   {
