@@ -1,17 +1,17 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import CameraScreen from './Camera';
-import ResultScreen from './Result';
 import ViewPhotos from './ViewPhotos';
 import SelectedPhoto from './SelectedPhoto';
+import WaitingScreen from './Waiting';
 
 const RootStack = StackNavigator(
   {
     Home: {
       screen: CameraScreen,
     },
-    Result: {
-      screen: ResultScreen,
+    Waiting: {
+      screen: WaitingScreen,
     },
     CameraRoll: {
       screen: ViewPhotos,
