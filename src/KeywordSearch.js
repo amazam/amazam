@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Button,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -90,6 +91,12 @@ export default class KeywordSearch extends Component {
             />
           ))}
         </View>
+
+        <Text>
+          {`${this.state.wordCheckList.filter(eachPair =>
+            eachPair.mode).map(eachPair =>
+            eachPair.word).join(' ')} ${this.state.search}`}
+        </Text>
 
         <View style={styles.submitButton}>
           <Button
