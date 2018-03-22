@@ -20,9 +20,6 @@ const RootStack = StackNavigator(
     SelectedPhoto: {
       screen: SelectedPhoto,
     },
-    KeywordSearch: {
-      screen: KeywordSearch,
-    },
   },
   {
     initialRouteName: 'Home',
