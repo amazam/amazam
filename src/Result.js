@@ -19,3 +19,5 @@ const ResultScreen = ({ products }) => (
 ResultScreen.propTypes = {
   products: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
+
+export default ResultScreen;

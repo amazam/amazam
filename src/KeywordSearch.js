@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
-  View,
   StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
-import Search from 'react-native-search-box';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,13 +30,6 @@ const styles = StyleSheet.create({
 });
 
 export default class KeywordSearch extends Component {
-  // static navigationOptions = {
-  //   title: 'Keyword Search',
-  //   headerStyle: { backgroundColor: 'black' },
-  //   headerTintColor: 'white',
-  //   headerTitleStyle: { color: 'white' },
-  // };
-
   constructor(props) {
     super(props);
 
@@ -55,7 +48,6 @@ export default class KeywordSearch extends Component {
   }
 
   onButtonPress = (index) => {
-    // toggle true/false
     const newWordList = [...this.state.wordCheckList];
 
     if (newWordList[index].mode) {
@@ -72,7 +64,9 @@ export default class KeywordSearch extends Component {
     let combinedWords = '';
 
     this.state.wordCheckList.forEach((eachPair) => {
-      combinedWords += `${eachPair.word} `;
+      if (eachPair.mode) {
+        combinedWords += `${eachPair.word} `;
+      }
     });
     combinedWords += this.state.search;
 
@@ -82,16 +76,15 @@ export default class KeywordSearch extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Search
-          ref="search_box"
-          onChangeText={() => console.log('on change text')}
-          onSearchButtonPress={() => console.log('on search button')}
-          onCancelButtonPress={() => console.log('on cancel button')}
+        <TextInput
+          placeholder="Add some words to search if you want"
+          onChangeText={text => this.setState({ search: text })}
         />
 
         <View style={styles.imageAPIWordButton}>
           {this.state.wordCheckList.map((eachPair, index) => (
             <Button
+              key={eachPair.word}
               onPress={() => this.onButtonPress(index)}
               title={eachPair.word}
             />
@@ -112,5 +105,4 @@ export default class KeywordSearch extends Component {
 
 KeywordSearch.propTypes = {
   getSearchText: PropTypes.func.isRequired,
-  imageRecognitionResult: PropTypes.string.isRequired,
 };

@@ -79,12 +79,12 @@ export default class WaitingScreen extends Component {
     } else if (this.state.result === 'processing') {
       return (
         <View style={styles.container}>
-          <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
-          <Text>{this.state.status}</Text>
           <Image
             style={styles.image}
             source={{ uri: `data:image/jpg;base64,${this.picture}` }}
           />
+          <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
+          <Text>{this.state.status}</Text>
         </View>
       );
     } else if (this.state.result === 'finish analysis') {
