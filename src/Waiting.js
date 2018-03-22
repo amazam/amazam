@@ -83,8 +83,8 @@ export default class WaitingScreen extends Component {
             style={styles.image}
             source={{ uri: `data:image/jpg;base64,${this.picture}` }}
           />
-          <ActivityIndicator size="large" color="#708090" sytle={{ margin: 10 }} />
-          <Text>{this.state.status}</Text>
+          <Text style={{color: 'blue', textAlign: 'center', margin: 5 }}>{this.state.status}</Text>
+          <ActivityIndicator size="large" color="#708090" sytle={{ margin: 20 }} />
         </View>
       );
     } else if (this.state.result === 'finish analysis') {
