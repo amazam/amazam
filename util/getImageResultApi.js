@@ -1,12 +1,8 @@
 import axios from 'axios';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 
-let counter = 0;
-
-const getResultFromApi = (analysisUrl, timeout) => {
-  counter += 1;
-
-  return new Promise((resolve, reject) => {
+const getResultFromApi = (analysisUrl, timeout, counter) =>
+  new Promise((resolve, reject) => {
     setTimeout(() => {
       axios.get(analysisUrl, {
         headers: {
@@ -22,7 +18,7 @@ const getResultFromApi = (analysisUrl, timeout) => {
               break;
             }
             case 'not completed': {
-              resolve(getResultFromApi(analysisUrl, 2000));
+              resolve(getResultFromApi(analysisUrl, 2000, counter + 1));
               break;
             }
             default: reject(new Error(resultData.data.status));
@@ -36,6 +32,5 @@ const getResultFromApi = (analysisUrl, timeout) => {
         });
     }, timeout);
   });
-};
 
 export default getResultFromApi;

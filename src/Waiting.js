@@ -13,6 +13,7 @@ import {
 import postImageApi from '../util/postImageApi';
 import getResultFromApi from '../util/getImageResultApi';
 import getProductAmazon from '../util/getProductAmazon';
+import cancelPromise from '../util/cancelPromise';
 import Keyword from './KeywordSearch';
 import Result from './Result';
 
@@ -52,6 +53,9 @@ export default class WaitingScreen extends Component {
     this.GOHOMEMESSAGE = 'Take a picture once again';
     this.analysisResult = null;
     this.products = null;
+    this.wrappedPostImagePromise = null;
+    this.wrappedGetAnalysisPromise = null;
+    this.wrappedGetProductPromise = null;
 
     this.state = {
       result: 'processing',
@@ -59,8 +63,20 @@ export default class WaitingScreen extends Component {
     };
   }
 
-  async componentWillMount() {
+  componentDidMount() {
     this.callPostImageApi();
+  }
+
+  componentWillUnmount() {
+    if (this.wrappedPostImagePromise != null) {
+      this.wrappedPostImagePromise.cancel();
+    }
+    if (this.wrappedGetAnalysisPromise != null) {
+      this.wrappedGetAnalysisPromise.cancel();
+    }
+    if (this.wrappedGetProductPromise != null) {
+      this.wrappedGetProductPromise.cancel();
+    }
   }
 
   get currentView() {
@@ -83,7 +99,7 @@ export default class WaitingScreen extends Component {
             style={styles.image}
             source={{ uri: `data:image/jpg;base64,${this.picture}` }}
           />
-          <Text style={{color: 'blue', textAlign: 'center', margin: 5 }}>{this.state.status}</Text>
+          <Text style={{ color: 'blue', textAlign: 'center', margin: 5 }}>{this.state.status}</Text>
           <ActivityIndicator size="large" color="#708090" sytle={{ margin: 20 }} />
         </View>
       );
@@ -110,8 +126,10 @@ export default class WaitingScreen extends Component {
   callGetProduct = async (searchKeywords) => {
     try {
       this.setState({ status: 'getting the data from amazon' });
-      this.products = await getProductAmazon(searchKeywords);
-      
+      this.wrappedGetProductPromise = cancelPromise(getProductAmazon(searchKeywords));
+
+      this.products = await this.wrappedGetProductPromise.promise;
+
       this.setState({ result: 'success' });
     } catch (error) {
       console.warn('amazonError', error);
@@ -133,7 +151,8 @@ export default class WaitingScreen extends Component {
     try {
       this.setState({ status: 'analyzing your image' });
 
-      this.analysisResult = await getResultFromApi(url, 5000);
+      this.wrappedGetProductPromise = cancelPromise(getResultFromApi(url, 5000, 1));
+      this.analysisResult = await this.wrappedGetProductPromise.promise;
 
       this.setState({ result: 'finish analysis' });
     } catch (error) {
@@ -145,7 +164,9 @@ export default class WaitingScreen extends Component {
   callPostImageApi = async () => {
     try {
       this.setState({ status: 'registering your image' });
-      const analysisUrl = await postImageApi(this.picture);
+
+      this.wrappedPostImagePromise = cancelPromise(postImageApi(this.picture));
+      const analysisUrl = await this.wrappedPostImagePromise.promise;
       this.callGetImageResultApi(analysisUrl);
     } catch (error) {
       console.warn(error);
