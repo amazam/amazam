@@ -6,7 +6,9 @@ import {
   Text,
   TextInput,
   View,
+  ScrollView,
 } from 'react-native';
+import Animbutton from './AnimButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,25 +16,26 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
   },
-  textinput: {
-    flex: 0,
-    flexDirection: 'column',
-    // justifyContent: 'space-evenly',
-  },
-  imageAPIWordButton: {
+  submitButton: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
   },
-  outputString: {
+  wordButtonContainer: {
+    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginTop: 10,
   },
-  submitButton: {
-    flex: 0,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: 100,
+  textContainerStyle: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  textStyle: {
+    fontSize: 16,
+    color: '#039BE5',
   },
 });
 
@@ -77,27 +80,38 @@ export default class KeywordSearch extends Component {
     });
     combinedWords += this.state.search;
 
+    console.log(combinedWords);
     this.props.getSearchText(combinedWords);
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.textContainerStyle}>
+          <Text style={styles.textStyle}>
+            Keywords passed to Amazon
+          </Text>
+        </View>
+
         <TextInput
           style={styles.textinput}
           placeholder="Add some words to search if you want"
           onChangeText={text => this.setState({ search: text })}
         />
 
-        <View style={styles.imageAPIWordButton}>
-          {this.state.wordCheckList.map((eachPair, index) => (
-            <Button
-              key={eachPair.word}
-              onPress={() => this.onButtonPress(index)}
-              title={eachPair.word}
-            />
-          ))}
-        </View>
+        <ScrollView>
+          <View style={styles.wordButtonContainer}>
+            {this.state.wordCheckList.map((eachPair, index) => (
+              <Animbutton
+                onColor="orange"
+                effect="rubberBand"
+                _onPress={status => this.onButtonPress(index)}
+                text={eachPair.word}
+                key={eachPair.word}
+              />
+            ))}
+          </View>
+        </ScrollView>
 
         <Text style={styles.imageAPIWordButton}>
           {`${this.state.wordCheckList.filter(eachPair =>
