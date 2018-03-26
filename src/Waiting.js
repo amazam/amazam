@@ -28,6 +28,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     resizeMode: 'contain',
   },
+  imageRotate: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    resizeMode: 'contain',
+    transform: [{ rotate: '90deg' }],
+  },
   errorAmazon: {
     flex: 1,
     alignItems: 'center',
@@ -48,6 +55,7 @@ export default class WaitingScreen extends Component {
 
     const { params } = this.props.navigation.state;
     this.picture = params ? params.picture : 'Failure';
+    this.pictureOrientation = params ? params.orientation : null;
 
     this.retryCounter = 0;
     this.GOHOMEMESSAGE = 'Take a picture once again';
@@ -96,8 +104,8 @@ export default class WaitingScreen extends Component {
       return (
         <View style={styles.container}>
           <Image
-            style={styles.image}
-            source={{ uri: `data:image/jpg;base64,${this.picture}` }}
+            style={this.pictureOrientation !== undefined ? styles.imageRotate : styles.image}
+            source={{ uri: `data:image/png;base64,${this.picture}` }}
           />
           <Text style={{ color: 'blue', textAlign: 'center', margin: 5 }}>{this.state.status}</Text>
           <ActivityIndicator size="large" color="#708090" sytle={{ margin: 20 }} />

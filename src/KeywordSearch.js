@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
 } from 'react-native';
+import firebase from 'react-native-firebase';
 import Animbutton from './AnimButton';
 
 const styles = StyleSheet.create({
@@ -16,9 +17,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
   },
-  submitButton: {
+  submitButtonContainer: {
     flex: 1,
     flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
   wordButtonContainer: {
     flex: 1,
@@ -80,8 +82,22 @@ export default class KeywordSearch extends Component {
     });
     combinedWords += this.state.search;
 
-    console.log(combinedWords);
     this.props.getSearchText(combinedWords);
+
+    const ref = firebase.database().ref();
+    const timestamp = new Date();
+    firebase.auth()
+      .signInAnonymouslyAndRetrieveData()
+      .then((credential) => {
+        if (credential) {
+          const analyticsData = {
+            userId: credential.user.uid,
+            keywords: combinedWords,
+            timestamp,
+          };
+          ref.push(analyticsData);
+        }
+      });
   }
 
   render() {
@@ -113,13 +129,12 @@ export default class KeywordSearch extends Component {
           </View>
         </ScrollView>
 
-        <Text style={styles.imageAPIWordButton}>
-          {`${this.state.wordCheckList.filter(eachPair =>
-            eachPair.mode).map(eachPair =>
-            eachPair.word).join(' ')} ${this.state.search}`}
-        </Text>
-
-        <View style={styles.submitButton}>
+        <View style={styles.submitButtonContainer}>
+          <Text style={styles.imageAPIWordButton}>
+            {`${this.state.wordCheckList.filter(eachPair =>
+              eachPair.mode).map(eachPair =>
+              eachPair.word).join(' ')} ${this.state.search}`}
+          </Text>
           <Button
             color="green"
             onPress={() => this.onSubmitButtonPress()}

@@ -60,10 +60,11 @@ export default class CameraScreen extends React.Component {
 
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 1, base64: true };
+      const options = { quality: 1, base64: true, exif: true };
       const data = await this.camera.takePictureAsync(options);
       this.props.navigation.navigate('Waiting', {
         picture: data.base64,
+        orientation: data.exif.Orientation,
       });
     }
   };

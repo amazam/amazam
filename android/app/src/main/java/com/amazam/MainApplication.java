@@ -3,6 +3,9 @@ package com.amazam;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage; // <-- Add this line
+import io.invertase.firebase.auth.RNFirebaseAuthPackage; // <-- Add this line
 import com.RNFetchBlob.RNFetchBlobPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactNativeHost;
@@ -25,8 +28,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFetchBlobPackage(),
-            new RNCameraPackage()
+          new RNFirebasePackage(),
+          new RNFirebaseDatabasePackage(), // <-- Add this line
+          new RNFirebaseAuthPackage(), // <-- Add this line
+          new RNFetchBlobPackage(),
+          new RNCameraPackage()
       );
     }
 
