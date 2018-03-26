@@ -31,12 +31,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textContainerStyle: {
-    alignItems: 'center',
+    flexDirection: 'column',
     marginTop: 10,
     marginBottom: 5,
   },
   textStyle: {
+    flexDirection: 'column',
     fontSize: 16,
+    textAlign: 'center',
     color: '#039BE5',
   },
 });
@@ -130,13 +132,13 @@ export default class KeywordSearch extends Component {
         </ScrollView>
 
         <View style={styles.submitButtonContainer}>
-          <Text style={styles.imageAPIWordButton}>
+          <Text style={styles.textStyle}>
             {`${this.state.wordCheckList.filter(eachPair =>
               eachPair.mode).map(eachPair =>
               eachPair.word).join(' ')} ${this.state.search}`}
           </Text>
           <Button
-            color="green"
+            color="blue"
             onPress={() => this.onSubmitButtonPress()}
             title="Submit"
           />
