@@ -66,20 +66,53 @@ export default class History extends Component {
 
     // this.props.getSearchText(combinedWords);
 
+    // Get a reference to the database service
+    const database = firebase.database();
     const ref = firebase.database().ref();
-    const timestamp = new Date();
-    firebase.auth()
-      .signInAnonymouslyAndRetrieveData()
-      .then((credential) => {
-        if (credential) {
-          const analyticsData = {
-            userId: credential.user.uid,
-            // keywords: combinedWords,
-            timestamp,
-          };
-          ref.push(analyticsData);
-        }
+
+    // console.log('database is :', database);
+
+    // console.log('db ref is: ', ref);
+    
+    const ref2 = firebase.database().ref().once('value')
+      .then((item) => {
+      //  console.log('item shows:::::: ', item, item.key, item._value);
+      let keywordsArray = [];
+        // console.log('object iteration reveals ', Object.entries(item._value).forEach(([key, value]) => console.log(`${key}: ${value}`)));
+        Object.entries(item._value).forEach(([key, value]) => {
+         // console.log(`${key}: ${value.keywords}`);
+          keywords = `${value.keywords}`;
+          keywordsArray.push(keywords);
+          // console.log(outputKeyWords);
+          // return outputKeyWords;
+        });
+        // let keywordsFromObject;
+
+
+        // for (const userID in item._value) {
+          // keywordsFromObject = userID[keywords];
+        console.log("userID revealssss: ", keywords, keywordsArray);
+        // }
+        // const historyData = {
+        //   item
+        // }
       });
+
+    console.log('db ref22222 is: ', ref2);
+    // const timestamp = new Date();
+
+    // firebase.auth()
+    //   .signInAnonymouslyAndRetrieveData()
+    //   .then((credential) => {
+    //     if (credential) {
+    //       const analyticsData = {
+    //         userId: credential.user.uid,
+    //         // keywords: combinedWords,
+    //         timestamp,
+    //       };
+    //       ref.push(analyticsData);
+    //     }
+    //   });
   }
 
   render() {
