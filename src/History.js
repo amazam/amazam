@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import Animbutton from './AnimButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
   defaultButton: {
     flex: 0,
     flexDirection: 'column',
-    
   },
   textStyle: {
     fontSize: 16,
@@ -54,6 +54,34 @@ export default class History extends Component {
     };
   }
 
+  onSubmitButtonPress = () => {
+    // let combinedWords = '';
+
+    // this.state.wordCheckList.forEach((eachPair) => {
+    //   if (eachPair.mode) {
+    //     combinedWords += `${eachPair.word} `;
+    //   }
+    // });
+    // combinedWords += this.state.search;
+
+    // this.props.getSearchText(combinedWords);
+
+    const ref = firebase.database().ref();
+    const timestamp = new Date();
+    firebase.auth()
+      .signInAnonymouslyAndRetrieveData()
+      .then((credential) => {
+        if (credential) {
+          const analyticsData = {
+            userId: credential.user.uid,
+            // keywords: combinedWords,
+            timestamp,
+          };
+          ref.push(analyticsData);
+        }
+      });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -67,7 +95,7 @@ export default class History extends Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => console.log('history button pressed')}
+              onPress={() => this.onSubmitButtonPress()}
             >
               <Text style={{ fontSize: 14 }}>
           second keywords history
