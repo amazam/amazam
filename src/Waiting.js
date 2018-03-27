@@ -58,7 +58,7 @@ export default class WaitingScreen extends Component {
     this.pictureOrientation = params ? params.orientation : null;
 
     this.retryCounter = 0;
-    this.GOHOMEMESSAGE = 'Take a picture once again';
+    this.GOHOMEMESSAGE = 'Take a picture again.';
     this.analysisResult = null;
     this.products = null;
     this.wrappedPostImagePromise = null;
@@ -92,7 +92,7 @@ export default class WaitingScreen extends Component {
       return (
         <View style={styles.errorAmazon}>
           <Button
-            title="Retry to get the product pages"
+            title="Retry to get the product pages."
             onPress={() => {
               this.setState({ result: 'processing' });
               this.callGetProduct();
@@ -133,7 +133,7 @@ export default class WaitingScreen extends Component {
 
   callGetProduct = async (searchKeywords) => {
     try {
-      this.setState({ status: 'getting the data from amazon' });
+      this.setState({ status: 'Getting the data from Amazon...' });
       this.wrappedGetProductPromise = cancelPromise(getProductAmazon(searchKeywords));
 
       this.products = await this.wrappedGetProductPromise.promise;
@@ -157,7 +157,7 @@ export default class WaitingScreen extends Component {
 
   callGetImageResultApi = async (url) => {
     try {
-      this.setState({ status: 'analyzing your image' });
+      this.setState({ status: 'Analyzing your image...' });
 
       this.wrappedGetProductPromise = cancelPromise(getResultFromApi(url, 5000, 1));
       this.analysisResult = await this.wrappedGetProductPromise.promise;
@@ -171,7 +171,7 @@ export default class WaitingScreen extends Component {
 
   callPostImageApi = async () => {
     try {
-      this.setState({ status: 'registering your image' });
+      this.setState({ status: 'Registering your image...' });
 
       this.wrappedPostImagePromise = cancelPromise(postImageApi(this.picture));
       const analysisUrl = await this.wrappedPostImagePromise.promise;
