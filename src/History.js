@@ -29,13 +29,13 @@ const styles = StyleSheet.create({
   defaultButton: {
     flex: 0,
     flexDirection: 'column',
+    alignItems: 'center',
   },
   textStyle: {
     fontSize: 16,
     color: '#039BE5',
   },
 });
-
 
 export default class History extends Component {
   static navigationOptions = {
@@ -49,93 +49,68 @@ export default class History extends Component {
     super(props);
     const { imageRecognitionResult } = this.props;
 
+    const keywordsArray = [];
+    const ref2 = firebase.database().ref().once('value')
+      .then((item) => {
+        Object.entries(item._value).forEach(([key, value]) => {
+          const keywords = `${value.keywords}`;
+          this.state.keywordsArray.push(keywords);
+        });
+        console.log('keywords revealssss: ', this.state.keywordsArray);
+      });
+
+
     this.state = {
       recentSearches: '',
+      keywordsArray,
     };
   }
 
   onSubmitButtonPress = () => {
-    // let combinedWords = '';
-
-    // this.state.wordCheckList.forEach((eachPair) => {
-    //   if (eachPair.mode) {
-    //     combinedWords += `${eachPair.word} `;
-    //   }
-    // });
-    // combinedWords += this.state.search;
-
-    // this.props.getSearchText(combinedWords);
-
     // Get a reference to the database service
-    const database = firebase.database();
-    const ref = firebase.database().ref();
+    // const database = firebase.database();
+    // const ref = firebase.database().ref();
 
     // console.log('database is :', database);
-
     // console.log('db ref is: ', ref);
-    
-    const ref2 = firebase.database().ref().once('value')
-      .then((item) => {
-      //  console.log('item shows:::::: ', item, item.key, item._value);
-      let keywordsArray = [];
-        // console.log('object iteration reveals ', Object.entries(item._value).forEach(([key, value]) => console.log(`${key}: ${value}`)));
-        Object.entries(item._value).forEach(([key, value]) => {
-         // console.log(`${key}: ${value.keywords}`);
-          keywords = `${value.keywords}`;
-          keywordsArray.push(keywords);
-          // console.log(outputKeyWords);
-          // return outputKeyWords;
-        });
-        // let keywordsFromObject;
+    // const keywordsArray = [];
+    // const keywords;
 
+    // const ref2 = firebase.database().ref().once('value')
+    //   .then((item) => {
+    //     Object.entries(item._value).forEach(([key, value]) => {
+    //       const keywords = `${value.keywords}`;
+    //       this.state.keywordsArray.push(keywords);
+    //     });
+    console.log('send this to KeywordSearch component ');
 
-        // for (const userID in item._value) {
-          // keywordsFromObject = userID[keywords];
-        console.log("userID revealssss: ", keywords, keywordsArray);
-        // }
-        // const historyData = {
-        //   item
-        // }
-      });
-
-    console.log('db ref22222 is: ', ref2);
-    // const timestamp = new Date();
-
-    // firebase.auth()
-    //   .signInAnonymouslyAndRetrieveData()
-    //   .then((credential) => {
-    //     if (credential) {
-    //       const analyticsData = {
-    //         userId: credential.user.uid,
-    //         // keywords: combinedWords,
-    //         timestamp,
-    //       };
-    //       ref.push(analyticsData);
-    //     }
-    //   });
+    console.log('mapping ', this.state.keywordsArray.map(eachPair => eachPair));
+    // });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.wordButtonContainer}>
-          <View style={styles.defaultButton}>
-            <TouchableOpacity
-              onPress={() => console.log('history button pressed')}
-            >
-              <Text style={{ fontSize: 14 }}>
-          first keywords history
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.onSubmitButtonPress()}
-            >
-              <Text style={{ fontSize: 14 }}>
-          second keywords history
-              </Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.defaultButton}>
+          <TouchableOpacity
+            onPress={() => this.onSubmitButtonPress()}
+          >
+            <Text style={{ fontSize: 14 }}>
+              Select existing keywords to go to keyword search
+            </Text>
+          </TouchableOpacity>
         </View>
+
+        <ScrollView>
+          <View style={styles.wordButtonContainer}>
+            {this.state.keywordsArray.map(eachPair => (
+              <Button
+                onPress={() => this.onSubmitButtonPress()}
+                title={eachPair}
+              />
+            )) }
+          </View>
+        </ScrollView>
       </View>
     );
   }
