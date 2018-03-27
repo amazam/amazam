@@ -69,6 +69,8 @@ export default class CameraScreen extends React.Component {
     }
   };
 
+  goToHistory = async () => this.props.navigation.navigate('History');
+
   render() {
     return (
       <View style={styles.container}>
@@ -98,6 +100,16 @@ export default class CameraScreen extends React.Component {
             >
               <Text style={{ fontSize: 14 }}>
                 CameraRoll
+              </Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.defaultButton}>
+            <TouchableHighlight
+              onPress={this.goToHistory}
+              style={styles.capture}
+            >
+              <Text style={{ fontSize: 14 }}>
+              History
               </Text>
             </TouchableHighlight>
           </View>

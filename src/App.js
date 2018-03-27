@@ -1,6 +1,7 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import CameraScreen from './Camera';
+import History from './History';
 import ViewPhotos from './ViewPhotos';
 import SelectedPhoto from './SelectedPhoto';
 import WaitingScreen from './Waiting';
@@ -18,6 +19,9 @@ const RootStack = StackNavigator(
     },
     SelectedPhoto: {
       screen: SelectedPhoto,
+    },
+    History: {
+      screen: History,
     },
   },
   {
