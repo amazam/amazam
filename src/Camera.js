@@ -60,8 +60,14 @@ export default class CameraScreen extends React.Component {
 
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 1, base64: true, exif: true };
+      const options = {
+        quality: 1,
+        base64: true,
+        exif: true,
+        fixOrientation: true,
+      };
       const data = await this.camera.takePictureAsync(options);
+      console.log(data);
       this.props.navigation.navigate('Waiting', {
         picture: data.base64,
         orientation: data.exif.Orientation,
@@ -83,7 +89,7 @@ export default class CameraScreen extends React.Component {
         <View style={styles.bottomButtons}>
           <View style={styles.defaultButton}>
             <TouchableOpacity
-              onPress={this.takePicture}
+              onPress={this.takePicture.bind(this)}
               style={styles.capture}
             >
               <Text style={{ fontSize: 14 }}>
