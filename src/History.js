@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
+    justifyContent: 'space-evenly',
   },
   wordButtonContainer: {
     flex: 1,
@@ -48,70 +49,30 @@ export default class History extends Component {
 
   constructor(props) {
     super(props);
-    const { imageRecognitionResult } = this.props;
-
-    // const keywordsArray = [];
-    // const ref2 = firebase.database().ref().once('value')
-    //   .then((item) => {
-    //     Object.entries(item._value).forEach(([key, value]) => {
-    //       const keywords = `${value.keywords}`;
-    //       this.state.keywordsArray.push(keywords);
-    //       // console.log('loop keywords: ', this.state.keywordsArray);
-    //     });
-    //   });
 
     this.state = {
-      recentSearchesArray: ['1', '2', '3'],
       keywordsArray: [],
-      keywordsArray2: [],
+      ref: '',
     };
-
     console.log('keywords revealssss: ', this.state.keywordsArray);
-    console.log('array revealssss: ', this.state.recentSearchesArray);
   }
 
   componentDidMount() {
-    const keywordsArray = [];
-    
     // const userId = firebase.auth().currentUser.uid;
-    //console.log('keywords userId outputs: ', userId);
-    
-    const ref2 = firebase.database().ref().once('value')
+    // console.log('keywords userId outputs: ', userId);
+
+    this.state.ref = firebase.database().ref().once('value')
       .then((item) => {
         this.setState({
-          keywordsArray: Object.entries(item._value).map(([key, value]) =>
-          //  {
-            // console.log("object mapping ", key, value);
+          keywordsArray: Object.entries(item._value).slice(0, 5).map(([key, value]) =>
             `${value.keywords}`),
-          // },
         });
       });
+      console.log("keyword firebase values ", this.state.ref);
   }
 
-  onListPress = () => {
-    // Get a reference to the database service
-    // const database = firebase.database();
-    // const ref = firebase.database().ref();
-
-    // console.log('database is :', database);
-    // console.log('db ref is: ', ref);
-    // const keywordsArray = [];
-    // const keywords;
-
-    // const ref2 = firebase.database().ref().once('value')
-    //   .then((item) => {
-    //     Object.entries(item._value).forEach(([key, value]) => {
-    //       const keywords = `${value.keywords}`;
-    //       this.state.keywordsArray.push(keywords);
-    //     });
-    console.log('send this to KeywordSearch component ');
-
-    console.log('mapping ', this.state.keywordsArray.map(eachPair => eachPair));
-    this.state.keywordsArray2 = this.state.keywordsArray.map(eachPair => eachPair);
-    console.log('keywordsarray2 is: ', this.state.keywordsArray2, typeof (this.state.keywordsArray2));
-    console.log('recentsearches show is: ', this.state.recentSearchesArray, typeof (this.state.recentSearchesArray));
-
-    // });
+  componentWillUnmount() {
+    clearInterval(this.state.ref);
   }
 
   onSubmitButtonPress = () => {
@@ -121,24 +82,15 @@ export default class History extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.defaultButton}>
-          <TouchableOpacity
-            onPress={() => this.onListPress()}
-          >
-            <Text style={{ fontSize: 14 }}>
-              Select existing keywords to go to keyword search
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         <ScrollView>
           <View style={styles.wordButtonContainer}>
             {this.state.keywordsArray.map((eachPair, index) => (
-              <Button
-                style={this.defaultButton}
-                onPress={() => this.onSubmitButtonPress()}
-                title={eachPair}
-              //
+              <Animbutton
+                onColor="green"
+                effect="rotate"
+                _onPress={() => this.onSubmitButtonPress(index)}
+                text={eachPair}
+                key={eachPair}
               />
             )) }
           </View>
