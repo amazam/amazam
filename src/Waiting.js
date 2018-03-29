@@ -104,7 +104,7 @@ export default class WaitingScreen extends Component {
       return (
         <View style={styles.container}>
           <Image
-            style={this.pictureOrientation !== undefined ? styles.imageRotate : styles.image}
+            style={this.pictureOrientation === 0 ? styles.imageRotate : styles.image}
             source={{ uri: `data:image/png;base64,${this.picture}` }}
           />
           <Text style={{ color: 'blue', textAlign: 'center', margin: 5 }}>{this.state.status}</Text>
