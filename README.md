@@ -43,10 +43,9 @@ yarn reactn
 ```
 
 4. In VS code, download the React-Native Tools and enable the debugger
+    - Press play on the debugger to start the server.
 
-- Press play on the debugger to start the server
-
-. In Genymotion, the app should deploy.
+5. In Genymotion, the app should deploy.
 
 ## 3. Launch production app
 
