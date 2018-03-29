@@ -61,14 +61,17 @@ export default class History extends Component {
     // const userId = firebase.auth().currentUser.uid;
     // console.log('keywords userId outputs: ', userId);
 
-    this.state.ref = firebase.database().ref().once('value')
+    this.state.ref = firebase.database().ref()
+      .orderByChild('timestamp')
+      .startAt('2018-03-28T11:28:34.041Z')
+      .once('value')
       .then((item) => {
         this.setState({
-          keywordsArray: Object.entries(item._value).slice(0, 5).map(([key, value]) =>
+          keywordsArray: Object.entries(item._value).map(([key, value]) =>
             `${value.keywords}`),
         });
       });
-      console.log("keyword firebase values ", this.state.ref);
+    console.log('keyword firebase values ', this.state.ref);
   }
 
   componentWillUnmount() {

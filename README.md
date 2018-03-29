@@ -1,4 +1,11 @@
 # Amazam
+Amazam is a product recognition app uses CloudSight image recognition and Amazon Product Advertising APIs.
+
+# Setup
+## Prerequisites
+ - node 
+ - yarn
+ - firebase
 
 To setup repository and run debug mode, follow steps below:
 1. git clone the repository
