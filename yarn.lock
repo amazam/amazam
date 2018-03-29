@@ -4681,9 +4681,9 @@ react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
-"react-native-camera@git+https://git@github.com/react-native-community/react-native-camera":
-  version "1.0.2"
-  resolved "git+https://git@github.com/react-native-community/react-native-camera#aedeaaaf1f32028cbc6a9abdb6ed34cc43ec31b7"
+react-native-camera@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-1.0.3.tgz#bb255a3e24659c7da6f36138d0fc1e49ae34c127"
   dependencies:
     lodash "^4.17.4"
     prop-types "^15.5.10"

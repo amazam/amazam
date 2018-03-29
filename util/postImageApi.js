@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { CLOUDSIGHT } from 'react-native-dotenv';
 
-// const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
+const CLOUDSIGHTSERVER = 'https://api.cloudsight.ai/v1/images';
 // const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-proxy.com/v1/images';
-const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
+// const CLOUDSIGHTSERVER = 'https://private-anon-0dcf546523-cloudsight.apiary-mock.com/v1/images';
 
 const postImageApi = async (picture) => {
   try {

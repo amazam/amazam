@@ -138,7 +138,7 @@ export default class KeywordSearch extends Component {
               eachPair.word).join(' ')} ${this.state.search}`}
           </Text>
           <Button
-            color="blue"
+            color="green"
             onPress={() => this.onSubmitButtonPress()}
             title="Submit"
           />
