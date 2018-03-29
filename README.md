@@ -30,12 +30,14 @@ To install app from git repository, go your terminal and follow steps below:
   yarn reactn
 ```
 4. In VS code, download the React-Native Tools and enable the debugger
-    - Press play on the debugger to start the server
-. In Genymotion, the app should deploy.
+    - Press play on the debugger to start the server.
+5. In Genymotion, the app should deploy.
 
 ## 3. Launch production app
 To deploy production app, follow 1. Installing and then in terminal, type:
-1. yarn reactn-release
+```
+yarn reactn-release
+```
 
 
 
